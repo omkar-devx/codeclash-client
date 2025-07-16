@@ -1,55 +1,22 @@
 import "./App.css";
-import Home from "./Routes/Home";
-import Layout from "./Routes/Layout";
-import Login from "./Routes/Login";
-import Register from "./Routes/Register";
-import Problemset from "./Routes/Problemset";
+import { Toaster } from "react-hot-toast";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { router } from "./Routes/router";
+import { RouterProvider } from "@tanstack/react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import {
-  createRootRoute,
-  createRoute,
-  createRouter,
-  RouterProvider,
-} from "@tanstack/react-router";
-
-const rootRoute = createRootRoute({ component: Layout });
-
-const homeRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/",
-  component: Home,
-});
-const loginRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/login",
-  component: Login,
-});
-const registerRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/register",
-  component: Register,
-});
-
-const ProblemsetRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/problemset",
-  component: Problemset,
-});
-const routeTree = rootRoute.addChildren([
-  homeRoute,
-  loginRoute,
-  registerRoute,
-  ProblemsetRoute,
-]);
-
-const router = createRouter({ routeTree });
+const queryClient = new QueryClient();
 
 function App() {
   return (
     <>
-      <RouterProvider router={router} />
-      <TanStackRouterDevtools router={router} position="bottom-right" />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <TanStackRouterDevtools router={router} position="bottom-left" />
+        <ReactQueryDevtools initialIsOpen={false} />
+        <Toaster />
+      </QueryClientProvider>
     </>
   );
 }

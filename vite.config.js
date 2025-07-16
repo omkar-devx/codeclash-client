@@ -8,7 +8,11 @@ import path from "path";
 export default defineConfig({
   server: {
     proxy: {
-      "/api": "http://localhost:8000/api/v1",
+      "/api": {
+        target: "http://localhost:8000/api/v1",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ""), // rewrite because of /api/v1
+      },
     },
   },
   plugins: [tanstackRouter(), react(), tailwindcss()],
