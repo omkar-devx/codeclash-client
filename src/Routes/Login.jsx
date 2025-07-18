@@ -1,10 +1,11 @@
 import { userLogin } from "@/api/services/authService";
 import { Button, Input, Label } from "@/components/index.js";
-import checkAuth from "@/utils/checkAuth";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import toast from "react-hot-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
+import { LoaderCircle } from "lucide-react";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -13,9 +14,8 @@ const Login = () => {
   const queryClient = useQueryClient();
   // validating user data
   const validateUserData = ({ username, password }) => {
-    if (!username || !password) {
-      throw new Error("Username and password are required");
-    }
+    if (!username || !password) return "Username and password are required";
+    return null;
   };
 
   // useMutation for login
@@ -32,23 +32,13 @@ const Login = () => {
     },
   });
 
-  const { data, isPending } = useQuery({
-    queryKey: ["currentUser"],
-    queryFn: checkAuth,
-    staleTime: 1 * 60 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-  });
+  const user = useSelector((state) => state.auth.userData);
 
   useEffect(() => {
-    if (data) {
+    if (user) {
       navigate({ to: "/" });
     }
-  }, [data, navigate]);
-
-  if (isPending) {
-    return <h1>Loading ...</h1>;
-  }
+  }, [user, navigate]);
 
   return (
     <div>
@@ -58,7 +48,11 @@ const Login = () => {
         onSubmit={(e) => {
           e.preventDefault();
           try {
-            validateUserData({ username, password });
+            const error = validateUserData({ username, password });
+            if (error) {
+              toast.error(error);
+              return;
+            }
             handleLogin.mutate({ username, password });
           } catch (error) {
             toast.error(error.message);
@@ -88,7 +82,9 @@ const Login = () => {
             />
           </div>
           <Button disabled={handleLogin.isPending}>
-            {handleLogin.isPending ? "Logging in...." : "Login"}
+            {handleLogin.isPending
+              ? `${(<LoaderCircle />)} Logging in....`
+              : "Login"}
           </Button>
         </div>
       </form>

@@ -5,6 +5,7 @@ import checkAuth from "@/utils/checkAuth";
 import toast from "react-hot-toast";
 import { userRegister } from "@/api/services/authService";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -80,22 +81,23 @@ const Register = () => {
     },
   });
 
-  const { data, isPending } = useQuery({
-    queryKey: ["currentUser"],
-    queryFn: checkAuth,
-    staleTime: 1 * 60 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-  });
+  // const { data, isPending } = useQuery({
+  //   queryKey: ["currentUser"],
+  //   queryFn: checkAuth,
+  //   staleTime: 1 * 60 * 60 * 1000,
+  //   refetchOnWindowFocus: false,
+  //   refetchOnMount: false,
+  // });
+  const user = useSelector((state) => state.auth.userData);
 
   useEffect(() => {
-    if (data) {
+    if (user) {
       navigate({ to: "/" });
     }
-  }, [data, navigate]);
+  }, [user, navigate]);
 
-  if (isPending) {
-    return <h1>loading.....</h1>;
+  if (user) {
+    return <Loader className="animate-spin text-blue-500 w-6 h-6" />;
   }
 
   return (

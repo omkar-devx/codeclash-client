@@ -34,4 +34,4 @@ const routeTree = rootRoute.addChildren([
   }),
 ]);
 
-export const router = createRouter({ routeTree, context: undefined });
+export const router = createRouter({ routeTree });
