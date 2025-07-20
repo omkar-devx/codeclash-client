@@ -7,7 +7,9 @@ export const API_ENDPOINTS = {
     CURRENTUSER: "/auth/me",
   },
   USER: {},
-  PROBLEMSET: {
+  QUESTIONS: {
+    PROBLEMSET: "/questions/problemset",
+    FINDBYID: (questionId) => `/questions/${questionId}`,
     QUESTIONLIKE: (questionId) => `/questions/${questionId}/like`,
     QUESTIONCOMMENT: (questionId) => `/questions/${questionId}/comment`,
     QUESTIONBOOKMARK: (questionId) => `/questions/${questionId}/bookmark`,

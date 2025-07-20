@@ -82,9 +82,14 @@ const Login = () => {
             />
           </div>
           <Button disabled={handleLogin.isPending}>
-            {handleLogin.isPending
-              ? `${(<LoaderCircle />)} Logging in....`
-              : "Login"}
+            {handleLogin.isPending ? (
+              <>
+                <LoaderCircle className="animate-spin mr-2" />
+                Logging in...
+              </>
+            ) : (
+              "Login"
+            )}
           </Button>
         </div>
       </form>

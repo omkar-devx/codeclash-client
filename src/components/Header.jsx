@@ -19,10 +19,10 @@ const Header = () => {
   const { data: userData, isPending } = useQuery({
     queryKey: ["currentUser"],
     queryFn: () => checkAuth(),
-    enabled: !user,
-    staleTime: 1 * 60 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    // enabled: !user,
+    staleTime: 10 * 60 * 1000,
+    // refetchOnWindowFocus: false,
+    // refetchOnMount: false,
   });
 
   useEffect(() => {
@@ -54,8 +54,8 @@ const Header = () => {
           <Link to="/problemset">Problems</Link>
         </li>
         {isPending ? (
-          <Loader className="animate-spin text-black-500 w-6 h-6" />
-        ) : user ? (
+          <Loader className="animate-spin text-black w-6 h-6" />
+        ) : userData ? (
           <li>
             <Button onClick={() => handleLogout.mutate()}>Logout</Button>
           </li>
