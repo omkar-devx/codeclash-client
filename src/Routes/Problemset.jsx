@@ -1,5 +1,5 @@
 import { problemset } from "@/api/services/questionService";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
 import {
   Table,
@@ -14,13 +14,25 @@ import {
 import React from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "@tanstack/react-router";
+import JoinRoomBox from "@/components/JoinRoomBox";
+import { getCurrentRoom } from "@/api/services/collaborateService";
 
 const Problemset = () => {
   const navigate = useNavigate();
-  const { data, isPending, isError, isSuccess } = useQuery({
+  const {
+    data: problems,
+    isPending: problemPending,
+    isError: problemError,
+    isSuccess: problemSuccess,
+  } = useQuery({
     queryKey: ["problemset"],
     queryFn: problemset,
     staleTime: 60 * 60 * 1000,
+  });
+
+  const { data: currentRoom, isPending: currentRoomPending } = useQuery({
+    queryKey: ["currentRoom"],
+    queryFn: getCurrentRoom,
   });
 
   const slugify = (text) =>
@@ -29,15 +41,11 @@ const Problemset = () => {
       .replace(/\s+/g, "-")
       .replace(/[^\w-]+/g, "");
 
-  if (isSuccess) {
-    console.log("problemset: ", data);
+  if (problemError) {
+    toast.error(problemError);
   }
 
-  if (isError) {
-    toast.error(isError);
-  }
-
-  if (isPending) {
+  if (problemPending) {
     return (
       <>
         <LoaderCircle className="animate-spin w-6 h-6" />
@@ -50,6 +58,12 @@ const Problemset = () => {
       <h1 className="text-center font-bold text-3xl underline mb-5">
         PROBLEMSET
       </h1>
+      <div className="flex justify-center">
+        <JoinRoomBox
+          currentRoom={currentRoom}
+          currentRoomPending={currentRoomPending}
+        />
+      </div>
       <div className="px-5">
         <Table>
           <TableCaption>Code Clash Problemset</TableCaption>
@@ -61,7 +75,7 @@ const Problemset = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((question) => (
+            {problems.map((question) => (
               <TableRow
                 onClick={() =>
                   navigate({

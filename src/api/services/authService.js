@@ -6,7 +6,8 @@ import api from "../axios";
 export const userCheck = async () => {
   try {
     const res = await api.get(API_ENDPOINTS.AUTH.CURRENTUSER);
-    return res.data;
+
+    return res.data.user;
   } catch (error) {
     throw new Error(error.response?.data?.message || "User is not Logged in");
   }

@@ -9,6 +9,7 @@ import Login from "./Login";
 import Register from "./Register";
 import Problemset from "./Problemset";
 import SoloProblemPage from "./SoloProblemPage";
+import CollaborateRoom from "./CollaborateRoom";
 
 const rootRoute = createRootRoute({ component: Layout });
 
@@ -42,11 +43,18 @@ const soloProblemRoute = createRoute({
   component: SoloProblemPage,
 });
 
+const collaborateRoom = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/problemset/room/$roomId",
+  component: CollaborateRoom,
+});
+
 const routeTree = rootRoute.addChildren([
   homeRoute,
   loginRoute,
   registerRoute,
   problemsetRoute,
+  collaborateRoom,
   soloProblemRoute,
 ]);
 

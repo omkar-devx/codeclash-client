@@ -12,6 +12,12 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""), // rewrite because of /api/v1
       },
+      "/ws": {
+        target: "ws://localhost:8000",
+        ws: true,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/ws/, ""),
+      },
     },
   },
   plugins: [react(), tailwindcss()],

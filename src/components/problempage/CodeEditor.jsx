@@ -9,7 +9,7 @@ const CodeEditor = React.memo(({ id, code, memoizedSetCode }) => {
   const timerRef = useRef(null);
   console.log("Codeeditor Rerendering");
   const storeToLocalStorage = (id, val) => {
-    const key = id.toString();
+    const key = `solo:uid:${id.toString()}`;
     console.log(key);
     // console.log(val);
     localStorage.setItem(key, JSON.stringify(val));

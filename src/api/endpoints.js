@@ -9,6 +9,7 @@ export const API_ENDPOINTS = {
   USER: {},
   QUESTIONS: {
     PROBLEMSET: "/questions/problemset",
+    MULTIPLEQUESTIONS: "/questions/multiple-question",
     FINDBYID: (questionId) => `/questions/${questionId}`,
     QUESTIONLIKE: (questionId) => `/questions/${questionId}/like`,
     QUESTIONCOMMENT: (questionId) => `/questions/${questionId}/comment`,
@@ -17,5 +18,12 @@ export const API_ENDPOINTS = {
   CODE: {
     CODERUN: "/coderunner/run",
     CODESUBMIT: "/coderunner/submit",
+  },
+  ROOM: {
+    CREATEROOM: "/collaborate/create-room",
+    JOINROOM: "/collaborate/join-room",
+    CURRENTROOM: "/collaborate/current-room",
+    LEAVEROOM: "/collaborate/leave-room",
+    CHATHISTORY: "/collaborate/chat-history",
   },
 };

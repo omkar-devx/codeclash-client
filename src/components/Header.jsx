@@ -13,7 +13,7 @@ const Header = () => {
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.userData);
-  console.log(user);
+  // console.log(user);
   // user logged in check
 
   const { data: userData, isPending } = useQuery({
@@ -26,8 +26,9 @@ const Header = () => {
   });
 
   useEffect(() => {
+    console.log(userData);
     if (userData) {
-      dispatch(setUserData(userData.user));
+      dispatch(setUserData(userData));
     }
   }, [userData]);
 
