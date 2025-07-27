@@ -8,7 +8,8 @@ import { CodeEditor, Description, Execution, Output } from "@/components";
 
 const SoloProblemPage = () => {
   const { id } = useParams({ from: "/problemset/question/$id/$title" });
-  const previousCode = localStorage.getItem(`solo:uid:${id.toString()}`);
+  const pageType = "solo";
+  const previousCode = localStorage.getItem(`${pageType}:uid:${id.toString()}`);
   const [output, setOutput] = useState([]);
   const queryClient = useQueryClient();
   const [code, setCode] = useState(
@@ -25,8 +26,11 @@ const SoloProblemPage = () => {
 
   const saveToLocalStorage = useCallback(() => {
     if (id && code) {
-      console.log("main", code);
-      localStorage.setItem(`solo:uid:${id.toString()}`, JSON.stringify(code));
+      // console.log("main", code);
+      localStorage.setItem(
+        `${pageType}:uid:${id.toString()}`,
+        JSON.stringify(code)
+      );
     }
   }, [id, code]);
 
@@ -60,12 +64,14 @@ const SoloProblemPage = () => {
             id={data.uid}
             code={code}
             memoizedSetCode={memoizedSetCode}
+            pageType={pageType}
           />
           <Execution
             id={data.uid}
             langId={52}
             setOutput={setOutput}
             saveToLocalStorage={saveToLocalStorage}
+            pageType={pageType}
           />
         </div>
         <Output outputs={output} />

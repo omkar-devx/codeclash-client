@@ -69,7 +69,13 @@ const JoinRoomBox = React.memo(({ currentRoom, currentRoomPending }) => {
 
   const handleLeave = useMutation({
     mutationFn: leaveRoom,
-    onSuccess: () => {
+    onSuccess: async () => {
+      const questions = currentRoom.questionArray;
+      const roomId = currentRoom.roomId;
+      await questions.map((uid) => {
+        console.log(`room:${roomId}:uid:${uid}`);
+        localStorage.removeItem(`room:${roomId}:uid:${uid}`);
+      });
       queryClient.invalidateQueries(["currentRoom"]);
     },
   });

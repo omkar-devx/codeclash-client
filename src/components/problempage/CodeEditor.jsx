@@ -5,11 +5,11 @@ import { cpp } from "@codemirror/lang-cpp";
 import { python } from "@codemirror/lang-python";
 import { java } from "@codemirror/lang-java";
 
-const CodeEditor = React.memo(({ id, code, memoizedSetCode }) => {
+const CodeEditor = React.memo(({ id, code, memoizedSetCode, pageType }) => {
   const timerRef = useRef(null);
-  console.log("Codeeditor Rerendering");
+  // console.log("Codeeditor Rerendering");
   const storeToLocalStorage = (id, val) => {
-    const key = `solo:uid:${id.toString()}`;
+    const key = `${pageType}:uid:${id.toString()}`;
     console.log(key);
     // console.log(val);
     localStorage.setItem(key, JSON.stringify(val));
@@ -23,7 +23,7 @@ const CodeEditor = React.memo(({ id, code, memoizedSetCode }) => {
       }
       timerRef.current = setTimeout(() => {
         storeToLocalStorage(id, val);
-      }, 2000);
+      }, 1000);
     },
     [id, memoizedSetCode]
   );

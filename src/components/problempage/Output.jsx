@@ -3,7 +3,7 @@ import { Base64 } from "js-base64";
 import toast from "react-hot-toast";
 
 const Output = React.memo(({ outputs }) => {
-  console.log("output Rerendering");
+  // console.log("output Rerendering");
   useEffect(() => {
     if (!outputs) {
       toast.error("Output not found");
