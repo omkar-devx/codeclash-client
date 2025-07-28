@@ -25,5 +25,7 @@ export const API_ENDPOINTS = {
     CURRENTROOM: "/collaborate/current-room",
     LEAVEROOM: "/collaborate/leave-room",
     CHATHISTORY: "/collaborate/chat-history",
+    ROOMUSERS: "/collaborate/room-users",
+    USERSONLINE: "/collaborate/users-online",
   },
 };

@@ -1,6 +1,6 @@
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Input } from "..";
+import { Button, Input } from "../../";
 import { initSocket } from "@/websocket/socket";
 import { useDispatch, useSelector } from "react-redux";
 import {

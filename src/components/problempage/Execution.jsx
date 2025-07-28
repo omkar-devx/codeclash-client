@@ -6,14 +6,7 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 
 const Execution = React.memo(
-  ({
-    id,
-    langId,
-    setOutput,
-    saveToLocalStorage,
-    pageType,
-    selectedQuestion = -1,
-  }) => {
+  ({ id, langId, setOutput, pageType, selectedQuestion = -1 }) => {
     const user = useSelector((state) => state.auth.userData);
     // console.log("Execution Rendering");
     const { mutate: runCode, isPending } = useMutation({
@@ -30,14 +23,13 @@ const Execution = React.memo(
     });
 
     const handleRun = () => {
-      saveToLocalStorage();
       let source_code;
       source_code = JSON.parse(
         localStorage.getItem(`${pageType}:uid:${id.toString()}`)
       );
 
       console.log({ questionUId: id, language_id: langId, source_code });
-      runCode({ questionUId: id, language_id: langId, source_code });
+      // runCode({ questionUId: id, language_id: langId, source_code });
     };
 
     if (isPending) {

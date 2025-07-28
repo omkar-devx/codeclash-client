@@ -1,9 +1,13 @@
 import {
   getCurrentRoom,
   getMultipleQuestions,
+  getRoomUsers,
+  getUsersOnline,
 } from "@/api/services/collaborateService";
 import { CodeEditor, Description, Execution, Output } from "@/components";
-import Chatbox from "@/components/problempage/Chatbox";
+import Chatbox from "@/components/problempage/collaborative/Chatbox.jsx";
+import CollaborativeEditor from "@/components/problempage/collaborative/CollaborativeEditor";
+import ReadOnlyCodeEditor from "@/components/problempage/collaborative/ReadOnlyCodeEditor";
 import checkAuth from "@/utils/checkAuth";
 import { initSocket } from "@/websocket/socket";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -21,7 +25,6 @@ const CollaborateRoom = () => {
   const [selectedQuestion, setSelectedQuestion] = useState(0);
   const [output, setOutput] = useState([]);
   const [roomChecked, setRoomChecked] = useState(false);
-  const [code, setCode] = useState([]);
 
   // get currentUser
   const { data: user, isPending: isUserPending } = useQuery({
@@ -41,44 +44,27 @@ const CollaborateRoom = () => {
     mutationFn: ({ questionArray }) => getMultipleQuestions({ questionArray }),
     onSuccess: (questions) => {
       setQuestionLen(questions.length);
-      let previousCode = [];
-      questions.map((question) => {
-        let temp = localStorage.getItem(`${pageType}:uid:${question.uid}`);
-        if (temp !== null) {
-          previousCode.push(JSON.parse(temp));
-        } else {
-          previousCode.push("");
-        }
-        console.log("loop", question.uid);
-      });
-      console.log("previousCode", previousCode);
-      setCode(previousCode);
     },
     onError: (err) => {
       toast.error(err.message);
     },
   });
 
-  const memoizedSetCode = useCallback(
-    (val) => {
-      setCode((prevCode) => {
-        const newCode = [...prevCode];
-        newCode[selectedQuestion] = val;
-        return newCode;
-      });
-    },
-    [selectedQuestion]
-  );
+  // get room users
+  const { data: roomUsers } = useQuery({
+    queryKey: ["roomUser"],
+    queryFn: () => getRoomUsers({ roomId }),
+    staleTime: 10000,
+    refetchInterval: 10000,
+  });
 
-  const saveToLocalStorage = useCallback(() => {
-    if (code && questions[selectedQuestion].uid) {
-      console.log("selected question", questions[selectedQuestion].uid);
-      localStorage.setItem(
-        `${pageType}:uid:${questions[selectedQuestion].uid}`,
-        JSON.stringify(code[selectedQuestion])
-      );
-    }
-  }, [code, questions, selectedQuestion]);
+  // get users online
+  const { data: usersOnline } = useQuery({
+    queryKey: ["onlineUsers"],
+    queryFn: () => getUsersOnline({ roomId }),
+    staleTime: 10000,
+    refetchInterval: 10000,
+  });
 
   useEffect(() => {
     const userLoaded = !isUserPending && !!user;
@@ -153,28 +139,42 @@ const CollaborateRoom = () => {
           <div className="flex">
             <Description question={questions[selectedQuestion]} />
             <div className="w-[15rem]">
-              <CodeEditor
+              <CollaborativeEditor
+                roomId={roomId}
+                userId={user.username}
                 id={questions[selectedQuestion].uid}
-                code={code[selectedQuestion]}
-                memoizedSetCode={memoizedSetCode}
+                language="cpp"
                 pageType={pageType}
               />
               <Execution
                 id={questions[selectedQuestion].uid}
                 langId={52}
                 setOutput={setOutput}
-                saveToLocalStorage={saveToLocalStorage}
                 pageType={pageType}
                 selectedQuestion={selectedQuestion}
               />
             </div>
-            <Output outputs={output} />
+            <div className="w-[20rem] mx-5">
+              <ReadOnlyCodeEditor
+                roomId={roomId}
+                id={questions[selectedQuestion].uid}
+                language="cpp"
+                targetUserId="test1"
+              />
+            </div>
+
+            {/* <Output outputs={output} /> */}
           </div>
         ) : (
           <p>loading...</p>
         )}
 
-        <Chatbox user={user} currentRoom={currentRoom} />
+        <div>
+          {
+            // roomUsers && roomUsers.map((ruser)=>)
+          }
+          <Chatbox user={user} currentRoom={currentRoom} />
+        </div>
       </div>
     </div>
   );

@@ -88,8 +88,32 @@ export const getChatHistory = async ({ roomId }) => {
     const chatHistory = await api.post(API_ENDPOINTS.ROOM.CHATHISTORY, {
       roomId,
     });
-    console.log(chatHistory.data.data);
+    // console.log(chatHistory.data.data);
     return chatHistory.data.data;
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+    return [];
+  }
+};
+
+export const getRoomUsers = async ({ roomId }) => {
+  try {
+    const roomUsers = await api.post(API_ENDPOINTS.ROOM.ROOMUSERS, { roomId });
+    console.log("get room users", roomUsers.data.data);
+    return roomUsers.data.data;
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+    return [];
+  }
+};
+
+export const getUsersOnline = async ({ roomId }) => {
+  try {
+    const usersOnline = await api.post(API_ENDPOINTS.ROOM.USERSONLINE, {
+      roomId,
+    });
+    console.log("get users online", usersOnline.data.data);
+    return usersOnline.data.data;
   } catch (error) {
     toast.error(error.response?.data?.message);
     return [];
