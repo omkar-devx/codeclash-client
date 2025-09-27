@@ -4,7 +4,8 @@ const Description = React.memo(({ question }) => {
   console.log("description Rerendering");
 
   return (
-    <div className="w-[30%]">
+    <div className="">
+      {console.log("solo question->", question)}
       <p>
         {question.uid} {question.title}
       </p>

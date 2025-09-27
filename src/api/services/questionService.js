@@ -36,3 +36,20 @@ export const questionById = async (questionId) => {
     return {};
   }
 };
+
+export const questionSearch = async (searchKey) => {
+  try {
+    console.log("serach key", searchKey);
+    const questions = await api.get(
+      `${API_ENDPOINTS.QUESTIONS.QUESTIONSEARCH}?searchKey=${searchKey}`
+    );
+    console.log("search questions", questions.data.data);
+    return questions.data.data;
+  } catch (error) {
+    console.warn(
+      error.response?.data?.message ||
+        "something went wrong while search questions"
+    );
+    return [];
+  }
+};

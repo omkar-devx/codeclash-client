@@ -25,6 +25,8 @@ const CollaborateRoom = () => {
   const [selectedQuestion, setSelectedQuestion] = useState(0);
   const [output, setOutput] = useState([]);
   const [roomChecked, setRoomChecked] = useState(false);
+  const [currentUser, setCurrentUser] = useState("");
+  const [participants, setParticipants] = useState([]);
 
   // get currentUser
   const { data: user, isPending: isUserPending } = useQuery({
@@ -54,16 +56,14 @@ const CollaborateRoom = () => {
   const { data: roomUsers } = useQuery({
     queryKey: ["roomUser"],
     queryFn: () => getRoomUsers({ roomId }),
-    staleTime: 10000,
-    refetchInterval: 10000,
+    refetchInterval: 2000,
   });
 
   // get users online
   const { data: usersOnline } = useQuery({
     queryKey: ["onlineUsers"],
     queryFn: () => getUsersOnline({ roomId }),
-    staleTime: 10000,
-    refetchInterval: 10000,
+    refetchInterval: 2000,
   });
 
   useEffect(() => {
@@ -79,33 +79,13 @@ const CollaborateRoom = () => {
         return;
       }
 
-      const socket = initSocket(
-        `${import.meta.env.VITE_WS_BASE_URL}/ws`,
-        dispatch
-      );
-
-      const userId = user.username;
-
-      if (roomId && userId) {
-        socket.onopen = () => {
-          socket.send(
-            JSON.stringify({ type: "join-room", payload: { roomId, userId } })
-          );
-        };
-      } else {
-        toast.error("userId or roomId not found in collaborate");
-      }
-
       if (currentRoom.questionArray?.length > 0) {
         fetchQuestions({ questionArray: currentRoom.questionArray });
       }
-
-      return () => {
-        socket.onopen = null;
-        socket.close?.();
-      };
     }
   }, [user, currentRoom?.roomId, currentRoomPending, roomId]);
+
+  const changeCurrentUser = () => {};
 
   const renderQuestionNumber = () => {
     let items = [];
@@ -128,53 +108,58 @@ const CollaborateRoom = () => {
     return items;
   };
 
-  return (
-    <div>
-      <div className="flex gap-4">
-        <div className="">
-          {questions ? renderQuestionNumber() : <p>loading...</p>}
-        </div>
-
-        {questions ? (
-          <div className="flex">
-            <Description question={questions[selectedQuestion]} />
-            <div className="w-[15rem]">
-              <CollaborativeEditor
-                roomId={roomId}
-                userId={user.username}
-                id={questions[selectedQuestion].uid}
-                language="cpp"
-                pageType={pageType}
-              />
-              <Execution
-                id={questions[selectedQuestion].uid}
-                langId={52}
-                setOutput={setOutput}
-                pageType={pageType}
-                selectedQuestion={selectedQuestion}
-              />
+  return !questions || !roomUsers ? (
+    <p>loading...</p>
+  ) : (
+    <div className="grid grid-cols-[50px_0.6fr_1fr_0.6fr] gap-1 h-screen ">
+      <div className="border-2 border-red-500 ">{renderQuestionNumber()}</div>
+      <div className="border-1 border-green-500">
+        {<Description question={questions[selectedQuestion]} />}
+      </div>
+      <div className="border-1 border-yellow-500 flex flex-col gap-1">
+        <div className="border-1 border-red-500 h-[3rem] flex gap-2">
+          {roomUsers.map((user) => (
+            <div
+              className="border-1 border-black cursor-pointer"
+              onClick={() => setCurrentUser(user)}
+            >
+              {user}
             </div>
-            <div className="w-[20rem] mx-5">
+          ))}
+        </div>
+        <div className="border-1 border-green-500 h-full">
+          <div>
+            {currentUser === user.username ? (
+              <div>
+                <CollaborativeEditor
+                  key={currentUser}
+                  roomId={roomId}
+                  userId={currentUser}
+                  id={questions[selectedQuestion].uid}
+                  language="cpp"
+                  pageType={pageType}
+                />
+                <Execution
+                  id={questions[selectedQuestion].uid}
+                  langId={52}
+                  setOutput={setOutput}
+                  pageType={pageType}
+                  selectedQuestion={selectedQuestion}
+                />
+              </div>
+            ) : (
               <ReadOnlyCodeEditor
                 roomId={roomId}
                 id={questions[selectedQuestion].uid}
                 language="cpp"
-                targetUserId="test1"
+                targetUserId={currentUser}
               />
-            </div>
-
-            {/* <Output outputs={output} /> */}
+            )}
           </div>
-        ) : (
-          <p>loading...</p>
-        )}
-
-        <div>
-          {
-            // roomUsers && roomUsers.map((ruser)=>)
-          }
-          <Chatbox user={user} currentRoom={currentRoom} />
         </div>
+      </div>
+      <div className="border-1 border-blue-500">
+        <Chatbox user={user} currentRoom={currentRoom} />
       </div>
     </div>
   );

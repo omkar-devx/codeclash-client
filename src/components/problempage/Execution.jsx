@@ -29,7 +29,7 @@ const Execution = React.memo(
       );
 
       console.log({ questionUId: id, language_id: langId, source_code });
-      // runCode({ questionUId: id, language_id: langId, source_code });
+      runCode({ questionUId: id, language_id: langId, source_code });
     };
 
     if (isPending) {

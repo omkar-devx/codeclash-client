@@ -1,13 +1,26 @@
 import { userLogin } from "@/api/services/authService";
-import { Button, Input, Label } from "@/components/index.js";
+// // import { Button, Input, Label } from "@/components/index.js";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import toast from "react-hot-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
-import { LoaderCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Loader2Icon } from "lucide-react";
 
-const Login = () => {
+const Login = ({
+  heading = "Login",
+  logo = {
+    url: "/",
+    src: "/",
+    alt: "logo",
+    title: "CodeClash",
+  },
+  buttonText = "Login",
+  signupText = "Need an account?",
+  signupUrl = "/register",
+}) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -41,59 +54,73 @@ const Login = () => {
   }, [user, navigate]);
 
   return (
-    <div>
-      <form
-        className="w-full flex flex-col items-center justify-center gap-4"
-        action=""
-        onSubmit={(e) => {
-          e.preventDefault();
-          try {
-            const error = validateUserData({ username, password });
-            if (error) {
-              toast.error(error);
-              return;
+    <section className="bg-muted ">
+      <div className="flex h-screen items-center justify-center">
+        <form
+          action=""
+          onSubmit={(e) => {
+            e.preventDefault();
+            try {
+              const error = validateUserData({ username, password });
+              if (error) {
+                toast.error(error);
+                return;
+              }
+              handleLogin.mutate({ username, password });
+            } catch (error) {
+              toast.error(error.message);
             }
-            handleLogin.mutate({ username, password });
-          } catch (error) {
-            toast.error(error.message);
-          }
-        }}
-      >
-        <h1 className="">Login Page</h1>
-        <div className="grid w-full max-w-sm items-center gap-3">
-          <div>
-            <Label htmlFor="email">Username</Label>
-            <Input
-              type="username"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="username "
-            />
+          }}
+        >
+          <div className="flex flex-col items-center gap-6 lg:justify-start">
+            <div className="min-w-sm border-muted bg-background flex w-full max-w-sm flex-col items-center gap-y-4 rounded-md border px-6 py-8 shadow-md">
+              {heading && <h1 className="text-xl font-semibold">{heading}</h1>}
+              <Input
+                type="username"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="username "
+                className="text-sm"
+                required
+              />
+              <Input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="enter you password"
+                className="text-sm"
+                required
+              />
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={handleLogin.isPending}
+              >
+                {handleLogin.isPending ? (
+                  <>
+                    <Loader2Icon className="animate-spin" />
+                    Please wait
+                  </>
+                ) : (
+                  buttonText
+                )}
+              </Button>
+            </div>
+            <div className="text-muted-foreground flex justify-center gap-1 text-sm">
+              <p>{signupText}</p>
+              <a
+                href={signupUrl}
+                className="text-primary font-medium hover:underline"
+              >
+                Sign up
+              </a>
+            </div>
           </div>
-          <div>
-            <Label htmlFor="password">Password</Label>
-            <Input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="enter you password"
-            />
-          </div>
-          <Button disabled={handleLogin.isPending}>
-            {handleLogin.isPending ? (
-              <>
-                <LoaderCircle className="animate-spin mr-2" />
-                Logging in...
-              </>
-            ) : (
-              "Login"
-            )}
-          </Button>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+    </section>
   );
 };
 

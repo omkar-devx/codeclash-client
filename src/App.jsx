@@ -15,7 +15,29 @@ function App() {
         <RouterProvider router={router} />
         <TanStackRouterDevtools router={router} position="bottom-left" />
         <ReactQueryDevtools initialIsOpen={false} />
-        <Toaster />
+        <Toaster
+          toastOptions={{
+            className: "text-sm font-medium rounded-md shadow-md",
+            style: {
+              border: "1px solid #e5e7eb",
+              background: "#ffffff",
+              color: "#111827",
+              padding: "12px 16px",
+            },
+            success: {
+              iconTheme: {
+                primary: "#10b981",
+                secondary: "#D1FAE5",
+              },
+            },
+            error: {
+              iconTheme: {
+                primary: "#ef4444",
+                secondary: "#fee2e2",
+              },
+            },
+          }}
+        />
       </QueryClientProvider>
     </>
   );

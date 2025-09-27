@@ -47,11 +47,19 @@ const Chatbox = React.memo(({ user, currentRoom }) => {
   useEffect(() => {
     if (user && currentRoom) {
       chatHistoryMutation({ roomId: currentRoom.roomId });
-      const socket = initSocket(
-        `${import.meta.env.VITE_WS_BASE_URL}/ws`,
-        dispatch
-      );
+      const socket = initSocket("/ws", dispatch);
+
       socketRef.current = socket;
+
+      socket.onopen = () => {
+        socket.send(
+          JSON.stringify({
+            type: "join-room",
+            payload: { roomId: currentRoom.roomId, userId: user.username },
+          })
+        );
+      };
+
       return () => {
         socket.close();
         socketRef.current = null;
@@ -78,7 +86,6 @@ const Chatbox = React.memo(({ user, currentRoom }) => {
                   >
                     <Message.CustomContent>
                       <div style={{ display: "flex", flexDirection: "column" }}>
-                        {/* Sender Name */}
                         <span
                           style={{
                             fontSize: "0.75rem",
@@ -89,7 +96,6 @@ const Chatbox = React.memo(({ user, currentRoom }) => {
                           {msg.userId}
                         </span>
 
-                        {/* Actual Message Content */}
                         <div
                           style={{
                             backgroundColor:

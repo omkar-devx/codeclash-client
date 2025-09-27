@@ -1,6 +1,6 @@
 import { problemset } from "@/api/services/questionService";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { LoaderCircle } from "lucide-react";
+// import { LoaderCircle, Sidebar } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -16,6 +16,19 @@ import toast from "react-hot-toast";
 import { useNavigate } from "@tanstack/react-router";
 import JoinRoomBox from "@/components/JoinRoomBox";
 import { getCurrentRoom } from "@/api/services/collaborateService";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components";
+import SearchQuestions from "@/components/SearchQuestions";
+import Sidebar from "@/components/Sidebar";
+import { LoaderCircle } from "lucide-react";
 
 const Problemset = () => {
   const navigate = useNavigate();
@@ -54,44 +67,39 @@ const Problemset = () => {
   }
 
   return (
-    <div>
-      <h1 className="text-center font-bold text-3xl underline mb-5">
-        PROBLEMSET
-      </h1>
-      <div className="flex justify-center">
-        <JoinRoomBox
-          currentRoom={currentRoom}
-          currentRoomPending={currentRoomPending}
-        />
-      </div>
-      <div className="px-5">
-        <Table>
-          <TableCaption>Code Clash Problemset</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Question Id</TableHead>
-              <TableHead>Title</TableHead>
-              <TableHead>Level</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {problems.map((question) => (
-              <TableRow
-                onClick={() =>
-                  navigate({
-                    to: `/problemset/question/$id/$title`,
-                    params: {
-                      id: question.uid,
-                      title: slugify(question.title),
-                    },
-                  })
-                }
-                key={question.uid}
-              >
-                <TableCell>{question.uid}</TableCell>
-                <TableCell>{question.title}</TableCell>
-                <TableCell
-                  className={`font-bold
+    <div className="px-4 py-2 h-screen flex gap-1">
+      <Card className="w-[77%] h-full bg-muted ">
+        <CardHeader>
+          <SearchQuestions />
+        </CardHeader>
+        <div className="px-5">
+          <Table>
+            <TableCaption>Code Clash Problemset</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Question Id</TableHead>
+                <TableHead>Title</TableHead>
+                <TableHead>Level</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {problems.map((question) => (
+                <TableRow
+                  onClick={() =>
+                    navigate({
+                      to: `/problemset/question/$id/$title`,
+                      params: {
+                        id: question.uid,
+                        title: slugify(question.title),
+                      },
+                    })
+                  }
+                  key={question.uid}
+                >
+                  <TableCell>{question.uid}</TableCell>
+                  <TableCell>{question.title}</TableCell>
+                  <TableCell
+                    className={`font-bold
                     ${
                       question.difficulty === "easy"
                         ? "text-green-500"
@@ -100,14 +108,19 @@ const Problemset = () => {
                           : "text-red-600"
                     }
                     `}
-                >
-                  {question.difficulty}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+                  >
+                    {question.difficulty}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </Card>
+      <Sidebar
+        currentRoom={currentRoom}
+        currentRoomPending={currentRoomPending}
+      />
     </div>
   );
 };

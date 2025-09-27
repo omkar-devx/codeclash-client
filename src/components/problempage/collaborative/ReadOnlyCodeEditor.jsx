@@ -12,7 +12,6 @@ import { yCollab } from "y-codemirror.next";
 const ReadOnlyCodeEditor = React.memo(
   ({ roomId, id, language, targetUserId }) => {
     const [ready, setReady] = useState(false);
-
     const ydocRef = useRef(null);
     const providerRef = useRef(null);
     const yTextRef = useRef(null);
@@ -21,10 +20,6 @@ const ReadOnlyCodeEditor = React.memo(
       const ydoc = new Y.Doc();
       const provider = new WebsocketProvider("/yjs", `room-${roomId}`, ydoc);
       const yText = ydoc.getText(`code-${targetUserId}-${id}`);
-
-      if (yText.length === 0) {
-        yText.insert(0, "");
-      }
 
       ydocRef.current = ydoc;
       providerRef.current = provider;
@@ -35,6 +30,15 @@ const ReadOnlyCodeEditor = React.memo(
       //   });
 
       setReady(true);
+
+      // provider.on("sync", (isSynced) => {
+      //   if (isSynced) {
+      //     ydocRef.current = ydoc;
+      //     providerRef.current = provider;
+      //     yTextRef.current = yText;
+      //     setReady(true); // only show editor once synced
+      //   }
+      // });
 
       return () => {
         provider.destroy();

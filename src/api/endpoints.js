@@ -10,7 +10,8 @@ export const API_ENDPOINTS = {
   QUESTIONS: {
     PROBLEMSET: "/questions/problemset",
     MULTIPLEQUESTIONS: "/questions/multiple-question",
-    FINDBYID: (questionId) => `/questions/${questionId}`,
+    QUESTIONSEARCH: "/questions/search",
+    FINDBYID: (questionId) => `/questions/id/${questionId}`,
     QUESTIONLIKE: (questionId) => `/questions/${questionId}/like`,
     QUESTIONCOMMENT: (questionId) => `/questions/${questionId}/comment`,
     QUESTIONBOOKMARK: (questionId) => `/questions/${questionId}/bookmark`,
