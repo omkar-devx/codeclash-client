@@ -7,7 +7,21 @@ import { java } from "@codemirror/lang-java";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 import { yCollab } from "y-codemirror.next";
-import { EditorView } from "@uiw/react-codemirror";
+import { EditorView } from "@codemirror/view";
+
+function getLanguageExtension(language) {
+  switch ((language || "").toLowerCase()) {
+    case "cpp":
+    case "c++":
+      return cpp();
+    case "python":
+      return python();
+    case "java":
+      return java();
+    default:
+      return cpp();
+  }
+}
 
 const CollaborativeEditor = React.memo(
   ({ roomId, userId, id, language, pageType }) => {
@@ -28,6 +42,8 @@ const CollaborativeEditor = React.memo(
       yTextRef.current = yText;
 
       provider.awareness.setLocalStateField("user", {
+        id: userId,
+        name: userId,
         color: "#2196f3",
       });
 
@@ -67,16 +83,15 @@ const CollaborativeEditor = React.memo(
 
 export default CollaborativeEditor;
 
-function getLanguageExtension(language) {
-  switch (language.toLowerCase()) {
-    case "cpp":
-    case "c++":
-      return cpp();
-    case "python":
-      return python();
-    case "java":
-      return java();
-    default:
-      return cpp();
-  }
-}
+/*
+  structure for codesharing
+    ydoc
+    └── users (Y.Map)
+         ├── "Alice" (Y.Map)
+         │     ├── "Q1" : Y.Text
+         │     └── "Q2" : Y.Text
+         └── "Bob" (Y.Map)
+               ├── "Q1" : Y.Text
+               └── "Q2" : Y.Text
+
+  */

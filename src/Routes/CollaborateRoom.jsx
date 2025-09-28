@@ -4,15 +4,14 @@ import {
   getRoomUsers,
   getUsersOnline,
 } from "@/api/services/collaborateService";
-import { CodeEditor, Description, Execution, Output } from "@/components";
+import { Description, Execution } from "@/components";
 import Chatbox from "@/components/problempage/collaborative/Chatbox.jsx";
 import CollaborativeEditor from "@/components/problempage/collaborative/CollaborativeEditor";
 import ReadOnlyCodeEditor from "@/components/problempage/collaborative/ReadOnlyCodeEditor";
 import checkAuth from "@/utils/checkAuth";
-import { initSocket } from "@/websocket/socket";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 
@@ -21,12 +20,12 @@ const CollaborateRoom = () => {
   const navigate = useNavigate();
   const { roomId } = useParams({ from: "/problemset/room/$roomId" });
   const pageType = `room:${roomId}`;
+
   const [questionLen, setQuestionLen] = useState(0);
   const [selectedQuestion, setSelectedQuestion] = useState(0);
   const [output, setOutput] = useState([]);
   const [roomChecked, setRoomChecked] = useState(false);
   const [currentUser, setCurrentUser] = useState("");
-  const [participants, setParticipants] = useState([]);
 
   // get currentUser
   const { data: user, isPending: isUserPending } = useQuery({
@@ -54,14 +53,14 @@ const CollaborateRoom = () => {
 
   // get room users
   const { data: roomUsers } = useQuery({
-    queryKey: ["roomUser"],
+    queryKey: ["roomUser", roomId],
     queryFn: () => getRoomUsers({ roomId }),
     refetchInterval: 2000,
   });
 
-  // get users online
+  // get users online (you can keep or remove polling later)
   const { data: usersOnline } = useQuery({
-    queryKey: ["onlineUsers"],
+    queryKey: ["onlineUsers", roomId],
     queryFn: () => getUsersOnline({ roomId }),
     refetchInterval: 2000,
   });
@@ -83,9 +82,23 @@ const CollaborateRoom = () => {
         fetchQuestions({ questionArray: currentRoom.questionArray });
       }
     }
-  }, [user, currentRoom?.roomId, currentRoomPending, roomId]);
+  }, [
+    user,
+    currentRoom?.roomId,
+    currentRoomPending,
+    roomId,
+    isUserPending,
+    roomChecked,
+    fetchQuestions,
+    navigate,
+  ]);
 
-  const changeCurrentUser = () => {};
+  // --- Simple auto-select: set currentUser to the logged-in username once (so they see their editor) ---
+  useEffect(() => {
+    if (!user?.username) return;
+    if (currentUser) return; // don't stomp a manual selection
+    setCurrentUser(user.username);
+  }, [user, currentUser]);
 
   const renderQuestionNumber = () => {
     let items = [];
@@ -108,39 +121,59 @@ const CollaborateRoom = () => {
     return items;
   };
 
-  return !questions || !roomUsers ? (
-    <p>loading...</p>
-  ) : (
+  const currentQuestion = questions?.[selectedQuestion];
+  if (!currentQuestion) return <p>loading question...</p>;
+
+  // If roomUsers isn't loaded yet, show a simple loading state
+  if (!questions || !roomUsers) return <p>loading...</p>;
+
+  return (
     <div className="grid grid-cols-[50px_0.6fr_1fr_0.6fr] gap-1 h-screen ">
       <div className="border-2 border-red-500 ">{renderQuestionNumber()}</div>
+
       <div className="border-1 border-green-500">
-        {<Description question={questions[selectedQuestion]} />}
+        <Description question={currentQuestion} />
       </div>
+
       <div className="border-1 border-yellow-500 flex flex-col gap-1">
-        <div className="border-1 border-red-500 h-[3rem] flex gap-2">
-          {roomUsers.map((user) => (
-            <div
-              className="border-1 border-black cursor-pointer"
-              onClick={() => setCurrentUser(user)}
-            >
-              {user}
-            </div>
-          ))}
+        <div className="border-1 border-red-500 h-[3rem] flex gap-2 items-center">
+          {roomUsers.map((u) => {
+            const name = typeof u === "string" ? u : (u?.username ?? "unknown");
+            return (
+              <div
+                key={typeof u === "string" ? u : (u?.id ?? name)}
+                className={`border-1 border-black cursor-pointer px-2 rounded ${
+                  currentUser === name ? "bg-red-600 text-white" : "bg-amber-50"
+                }`}
+                onClick={() => setCurrentUser(name)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") setCurrentUser(name);
+                }}
+                aria-label={`Select user ${name}`}
+              >
+                {name}
+              </div>
+            );
+          })}
         </div>
+
         <div className="border-1 border-green-500 h-full">
           <div>
-            {currentUser === user.username ? (
+            {currentUser && currentUser === user?.username ? (
               <div>
                 <CollaborativeEditor
-                  key={currentUser}
+                  key={`${currentUser}::${currentQuestion.uid}`}
                   roomId={roomId}
                   userId={currentUser}
-                  id={questions[selectedQuestion].uid}
+                  id={currentQuestion.uid}
                   language="cpp"
                   pageType={pageType}
                 />
                 <Execution
-                  id={questions[selectedQuestion].uid}
+                  key={`exec::${currentQuestion.uid}`}
+                  id={currentQuestion.uid}
                   langId={52}
                   setOutput={setOutput}
                   pageType={pageType}
@@ -149,8 +182,9 @@ const CollaborateRoom = () => {
               </div>
             ) : (
               <ReadOnlyCodeEditor
+                key={`ro::${currentUser}::${currentQuestion.uid}`}
                 roomId={roomId}
-                id={questions[selectedQuestion].uid}
+                id={currentQuestion.uid}
                 language="cpp"
                 targetUserId={currentUser}
               />
@@ -158,6 +192,7 @@ const CollaborateRoom = () => {
           </div>
         </div>
       </div>
+
       <div className="border-1 border-blue-500">
         <Chatbox user={user} currentRoom={currentRoom} />
       </div>

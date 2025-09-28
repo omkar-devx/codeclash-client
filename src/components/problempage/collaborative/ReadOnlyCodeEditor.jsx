@@ -9,6 +9,20 @@ import { WebsocketProvider } from "y-websocket";
 import { EditorView } from "@codemirror/view";
 import { yCollab } from "y-codemirror.next";
 
+function getLanguageExtension(language) {
+  switch ((language || "").toLowerCase()) {
+    case "cpp":
+    case "c++":
+      return cpp();
+    case "java":
+      return java();
+    case "python":
+      return python();
+    default:
+      return cpp();
+  }
+}
+
 const ReadOnlyCodeEditor = React.memo(
   ({ roomId, id, language, targetUserId }) => {
     const [ready, setReady] = useState(false);
@@ -74,17 +88,3 @@ const ReadOnlyCodeEditor = React.memo(
 );
 
 export default ReadOnlyCodeEditor;
-
-function getLanguageExtension(language) {
-  switch (language.toLowerCase()) {
-    case "cpp":
-    case "c++":
-      return cpp();
-    case "java":
-      return java();
-    case "python":
-      return python();
-    default:
-      return cpp();
-  }
-}
