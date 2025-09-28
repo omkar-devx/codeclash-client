@@ -4,13 +4,17 @@ import {
   getRoomUsers,
   getUsersOnline,
 } from "@/api/services/collaborateService";
-import { Description, Execution } from "@/components";
+import { Description, Execution, Input } from "@/components";
+import ActiveUsers from "@/components/problempage/collaborative/ActiveUsers";
 import Chatbox from "@/components/problempage/collaborative/Chatbox.jsx";
 import CollaborativeEditor from "@/components/problempage/collaborative/CollaborativeEditor";
+import LeaveRoom from "@/components/problempage/collaborative/LeaveRoom";
 import ReadOnlyCodeEditor from "@/components/problempage/collaborative/ReadOnlyCodeEditor";
+import RoomControler from "@/components/problempage/collaborative/RoomControler";
 import checkAuth from "@/utils/checkAuth";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
+import { Copy } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
@@ -64,6 +68,11 @@ const CollaborateRoom = () => {
     queryFn: () => getUsersOnline({ roomId }),
     refetchInterval: 2000,
   });
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(roomId);
+    toast.success("Room Id Copied");
+  };
 
   useEffect(() => {
     const userLoaded = !isUserPending && !!user;
@@ -194,6 +203,15 @@ const CollaborateRoom = () => {
       </div>
 
       <div className="border-1 border-blue-500">
+        {/* <RoomControler /> */}
+        <div className="flex justify-around items-center border-1 border-blue-700 my-1 ">
+          <div className="flex items-center gap-2">
+            <Input value={roomId} disabled={true} className="w-[7rem]" />
+            <Copy className="w-5 cursor-pointer" onClick={handleCopy} />
+          </div>
+          <LeaveRoom currentRoom={currentRoom} user={user} />
+        </div>
+        <ActiveUsers />
         <Chatbox user={user} currentRoom={currentRoom} />
       </div>
     </div>

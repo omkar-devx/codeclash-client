@@ -39,20 +39,7 @@ const ReadOnlyCodeEditor = React.memo(
       providerRef.current = provider;
       yTextRef.current = yText;
 
-      //   provider.awareness.setLocalStateField("user", {
-      //     color: "#2196f3",
-      //   });
-
       setReady(true);
-
-      // provider.on("sync", (isSynced) => {
-      //   if (isSynced) {
-      //     ydocRef.current = ydoc;
-      //     providerRef.current = provider;
-      //     yTextRef.current = yText;
-      //     setReady(true); // only show editor once synced
-      //   }
-      // });
 
       return () => {
         provider.destroy();
