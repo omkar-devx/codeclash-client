@@ -92,12 +92,10 @@ const Header = ({
   });
 
   return (
-    <section className=" py-1">
+    <section className="py-1 h-16">
       <div className=" container">
         <nav className="hidden justify-around lg:flex">
-          {/* <div className="flex items-center gap-6"> */}
           <a href={logo.url} className="flex items-center gap-2">
-            {/* <img src={logo.src} className="max-h-8" alt={logo.alt} /> */}
             <span className="text-lg font-semibold tracking-tighter">
               {logo.title}
             </span>
@@ -109,7 +107,7 @@ const Header = ({
               </NavigationMenuList>
             </NavigationMenu>
           </div>
-          {/* </div> */}
+
           <div className="flex items-center gap-2 cursor-pointer">
             {isPending ? (
               <Loader className="animate-spin text-black w-6 h-6" />
@@ -136,12 +134,9 @@ const Header = ({
           </div>
         </nav>
 
-        {/* Mobile Menu */}
         <div className="block lg:hidden">
           <div className="flex items-center justify-between">
-            {/* Logo */}
             <a href={logo.url} className="flex items-center gap-2">
-              {/* <img src={logo.src} className="max-h-8" alt={logo.alt} /> */}
               <span className="text-lg font-semibold tracking-tighter">
                 {logo.title}
               </span>

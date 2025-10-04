@@ -13,8 +13,8 @@ function App() {
     <>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
-        <TanStackRouterDevtools router={router} position="bottom-left" />
-        <ReactQueryDevtools initialIsOpen={false} />
+        {/* <TanStackRouterDevtools router={router} position="bottom-left" />
+        <ReactQueryDevtools initialIsOpen={false} /> */}
         <Toaster
           toastOptions={{
             className: "text-sm font-medium rounded-md shadow-md",

@@ -30,8 +30,9 @@ const CodeEditor = React.memo(({ id, code, memoizedSetCode, pageType }) => {
 
   return (
     <ReactCodeMirror
+      className="h-full w-full"
+      height="100%"
       width="100%"
-      minHeight="80vh"
       theme={tomorrowNightBlue}
       value={code}
       onChange={debounceCode}

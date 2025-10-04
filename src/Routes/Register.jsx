@@ -112,6 +112,7 @@ const Register = ({
   if (user) {
     return <Loader className="animate-spin text-blue-500 w-6 h-6" />;
   }
+
   return (
     <section className="bg-muted h-max">
       <div className="flex  h-max py-4 items-center justify-center">

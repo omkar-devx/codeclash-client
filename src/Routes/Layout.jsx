@@ -4,9 +4,9 @@ import React from "react";
 
 const Layout = () => {
   return (
-    <div>
+    <div className="flex flex-col h-screen">
       <Header />
-      <Outlet />
+      <Outlet className="flex-1 min-h-0" />
     </div>
   );
 };

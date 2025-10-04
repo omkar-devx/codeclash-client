@@ -2,36 +2,64 @@ import toast from "react-hot-toast";
 import api from "../axios";
 import { API_ENDPOINTS } from "../endpoints";
 
-export const codeRun = async ({ questionUId, language_id, source_code }) => {
+const DEFAULT_TIMEOUT_MS = 120000;
+
+export const codeRun = async ({
+  questionUId,
+  language_id,
+  source_code,
+  timeoutMs = DEFAULT_TIMEOUT_MS,
+}) => {
   try {
-    const res = await api.post(API_ENDPOINTS.CODE.CODERUN, {
-      questionUId,
-      language_id,
-      source_code,
-    });
+    const res = await api.post(
+      API_ENDPOINTS.CODE.CODERUN,
+      { questionUId, language_id, source_code },
+      { timeout: timeoutMs }
+    );
+
     if (!res?.data) {
-      toast.error("Something went wrong try again..");
+      const msg = "No response data from server";
+      toast.error(msg);
+      throw new Error(msg);
     }
-    return res.data.data;
+
+    return res.data.data ?? res.data;
   } catch (error) {
-    toast.error(error.response?.data?.message || "Something Went Wrong");
-    return {};
+    const message =
+      error?.response?.data?.message ||
+      error?.message ||
+      "Something Went Wrong";
+    toast.error(message);
+    throw error;
   }
 };
 
-export const codeSubmit = async ({ questionUid, language_id, source_code }) => {
+export const codeSubmit = async ({
+  questionUId,
+  language_id,
+  source_code,
+  timeoutMs = DEFAULT_TIMEOUT_MS,
+}) => {
   try {
-    const res = await api.post(API_ENDPOINTS.CODE.CODESUBMIT, {
-      questionUid,
-      language_id,
-      source_code,
-    });
+    const res = await api.post(
+      API_ENDPOINTS.CODE.CODESUBMIT,
+      { questionUId, language_id, source_code },
+      { timeout: timeoutMs }
+    );
+
     if (!res?.data) {
-      toast.error("Something went wrong try again..");
+      const msg = "No response data from server";
+      toast.error(msg);
+      throw new Error(msg);
     }
-    return res.data.data;
+
+    return res.data.data ?? res.data;
   } catch (error) {
-    toast.error(error.response?.data?.message || "Something Went Wrong");
-    return {};
+    const message =
+      error?.response?.data?.message ||
+      error?.message ||
+      "Something Went Wrong";
+    toast.error(message);
+    throw error;
   }
 };
