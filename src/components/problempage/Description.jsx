@@ -1,9 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronDown, ChevronRight, CheckCircle, XCircle } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { isQuestionSubmitted } from "@/api/services/questionService";
 
 const Description = React.memo(({ question }) => {
   const [showTopics, setShowTopics] = useState(false);
   const [showHints, setShowHints] = useState(false);
+  // const [isSolved, setIsSolved] = useState(false);
+
+  const { data: isSolved } = useQuery({
+    queryKey: ["isSubmitted", question.uid],
+    queryFn: () => isQuestionSubmitted(question.uid),
+  });
 
   if (!question) {
     return (
@@ -26,6 +34,12 @@ const Description = React.memo(({ question }) => {
     }
   };
 
+  // useEffect(() => {
+  //   const isSubmitted = isQuestionSubmitted(id);
+  //   console.log("is Submitted", isSubmitted);
+  //   setIsSolved(isSubmitted);
+  // }, [id]);
+
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
       <div className="space-y-4">
@@ -40,13 +54,14 @@ const Description = React.memo(({ question }) => {
               {question.difficulty}
             </span>
             <div className="flex items-center gap-1">
-              {question.submitted > 0 ? (
+              {console.log("submitted -> ", isSolved)}
+              {isSolved?.isSubmitted > 0 ? (
                 <CheckCircle className="w-4 h-4 text-easy" />
               ) : (
                 <XCircle className="w-4 h-4 text-muted-foreground" />
               )}
               <span className="text-sm text-muted-foreground">
-                {question.submitted > 0 ? "Solved" : "Unsolved"}
+                {isSolved?.isSubmitted > 0 ? "Solved" : "Unsolved"}
               </span>
             </div>
           </div>
@@ -63,7 +78,7 @@ const Description = React.memo(({ question }) => {
       <div className="space-y-4">
         <h2 className="text-lg font-medium">Examples</h2>
         <div className="space-y-4">
-          {question.examples.map((example, index) => (
+          {question?.examples.map((example, index) => (
             <div
               key={index}
               className="bg-muted/50 rounded-lg p-4 space-y-2 font-mono text-sm"

@@ -1,0 +1,69 @@
+import { Copy, Repeat2 } from "lucide-react";
+import React from "react";
+import toast from "react-hot-toast";
+
+const EditorTools = React.memo(
+  ({ defaultCode, code, setCode, langId, setLangId }) => {
+    const handleCopy = () => {
+      navigator.clipboard.writeText(code);
+      toast.success("Code Copied ✅");
+    };
+
+    const handleReset = (langId, defaultCode) => {
+      const resetCode = getCodeByLang(langId, defaultCode);
+      setCode(resetCode);
+    };
+
+    const getCodeByLang = (langId, defaultCode) => {
+      switch (Number(langId)) {
+        case 54:
+          return defaultCode.cpp;
+        case 62:
+          return defaultCode.java;
+        case 71:
+          return defaultCode.python;
+        default:
+          return "";
+      }
+    };
+
+    return (
+      <div className="flex justify-between items-center px-5  bg-white   shadow-md border border-zinc-700">
+        <div className="flex items-center gap-2">
+          <label htmlFor="language" className="text-sm font-medium ">
+            Language:
+          </label>
+          <select
+            id="language"
+            value={langId}
+            onChange={(e) => setLangId(e.target.value)}
+            className=" border border-zinc-600 rounded-md px-3 py-1 text-sm focus:ring-2 cursor-pointer  outline-none"
+          >
+            <option value="54">C++</option>
+            <option value="62">Java</option>
+            <option value="71">Python</option>
+          </select>
+        </div>
+
+        <div className="flex gap-4 items-center">
+          <button
+            onClick={handleCopy}
+            className="p-2 rounded-md hover:bg-gray-500 transition-all duration-150 cursor-pointer"
+            title="Copy Code"
+          >
+            <Copy className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => handleReset(langId, defaultCode)}
+            className="p-2 rounded-md hover:bg-gray-500 transition-all duration-150 cursor-pointer"
+            title="Reset Code"
+          >
+            <Repeat2 className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+    );
+  }
+);
+
+export default EditorTools;

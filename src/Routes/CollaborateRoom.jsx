@@ -203,7 +203,6 @@ const CollaborateRoom = () => {
       </div>
 
       <div className="border-1 border-blue-500">
-        {/* <RoomControler /> */}
         <div className="flex justify-around items-center border-1 border-blue-700 my-1 ">
           <div className="flex items-center gap-2">
             <Input value={roomId} disabled={true} className="w-[7rem]" />

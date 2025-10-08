@@ -53,3 +53,21 @@ export const questionSearch = async (searchKey) => {
     return [];
   }
 };
+
+export const isQuestionSubmitted = async (questionId) => {
+  try {
+    const res = await api.get(
+      `${API_ENDPOINTS.QUESTIONS.ISSUBMITTED(questionId)}`
+    );
+    if (!res) {
+      toast.error("something went wrong !!! (question is submitted)");
+      throw new Error("something went wrong !!");
+    }
+    return res?.data?.data;
+  } catch (error) {
+    toast.error(
+      error.response?.data?.message || "Something went wrong on server"
+    );
+    return {};
+  }
+};

@@ -6,20 +6,24 @@ import toast from "react-hot-toast";
 import { LoaderCircle } from "lucide-react";
 import { CodeEditor, Description, Execution, Output } from "@/components";
 import SubmissionResult from "@/components/problempage/SubmissionResult";
+import EditorTools from "@/components/problempage/EditorTools";
 
 const SoloProblemPage = () => {
   const { id } = useParams({ from: "/problemset/question/$id/$title" });
   const pageType = "solo";
   const queryClient = useQueryClient();
-  const previousCode = localStorage.getItem(`${pageType}:uid:${id.toString()}`);
+  const previousCode = localStorage.getItem(
+    `${pageType}:uid:54:${id.toString()}`
+  );
   const [output, setOutput] = useState([]);
   const [submissionOutput, setSubmissionOutput] = useState(null);
-  const [lang, setLang] = useState("cpp");
+  const [langId, setLangId] = useState(54);
   const [code, setCode] = useState(
     previousCode ? JSON.parse(previousCode) : ""
   );
   const [toggleOutput, setToggleOutput] = useState(false);
   const [toggleSubmission, setToggleSubmission] = useState(false);
+  const [defaultCode, setDefaultCode] = useState("");
 
   const { data, isPending, isError, error } = useQuery({
     queryKey: ["problemset", id],
@@ -31,13 +35,68 @@ const SoloProblemPage = () => {
 
   const saveToLocalStorage = useCallback(() => {
     if (id && code) {
-      // console.log("main", code);
       localStorage.setItem(
-        `${pageType}:uid:${id.toString()}`,
+        `${pageType}:uid:${langId}:${id.toString()}`,
         JSON.stringify(code)
       );
     }
   }, [id, code]);
+
+  useEffect(() => {
+    if (data?.defaultCode) {
+      setDefaultCode(data.defaultCode);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (defaultCode && code === "") {
+      setCode(getCodeByLang(langId, defaultCode));
+    }
+  }, [defaultCode]);
+
+  useEffect(() => {
+    const key = `${pageType}:uid:${langId}:${id?.toString()}`;
+
+    let raw = null;
+    try {
+      raw = localStorage.getItem(key);
+    } catch (e) {
+      console.warn("localStorage.getItem failed", e);
+      raw = null;
+    }
+
+    let storedCode = null;
+    try {
+      storedCode = raw !== null ? JSON.parse(raw) : null;
+    } catch (e) {
+      console.warn("JSON.parse failed, fallback to raw string", e);
+      storedCode = raw;
+    }
+
+    const hasStored =
+      storedCode !== null &&
+      storedCode !== undefined &&
+      !(typeof storedCode === "string" && storedCode.trim() === "");
+
+    console.log({ key, raw, storedCode, hasStored, defaultCode });
+
+    if (hasStored) {
+      setCode(storedCode);
+      console.log("Loaded stored code");
+      return;
+    }
+
+    if (defaultCode) {
+      // console.log("this is default code : ", defaultCode.python);
+      // console.log(getCodeByLang(langId, defaultCode));
+      setCode(getCodeByLang(langId, defaultCode) || "");
+      console.log("Loaded default code for language");
+      return;
+    }
+
+    // fallback to empty
+    setCode("");
+  }, [langId, id, defaultCode, pageType, defaultCode]);
 
   useEffect(() => {
     queryClient.refetchQueries({
@@ -46,7 +105,19 @@ const SoloProblemPage = () => {
     });
   }, [id, queryClient]);
 
-  // console.log("rendering...");
+  const getCodeByLang = (langId, defaultCode) => {
+    switch (Number(langId)) {
+      case 54:
+        return defaultCode.cpp;
+      case 62:
+        return defaultCode.java;
+      case 71:
+        return defaultCode.python;
+      default:
+        return "";
+    }
+  };
+
   if (isPending) {
     return (
       <>
@@ -67,10 +138,17 @@ const SoloProblemPage = () => {
       </div>
 
       <div className="h-full flex flex-col min-h-0 border-1 border-blue-700 relative">
-        <div>language choose , copy, reset</div>
+        <EditorTools
+          defaultCode={defaultCode}
+          code={code}
+          setCode={setCode}
+          langId={langId}
+          setLangId={setLangId}
+        />
         <div className="flex-1 overflow-auto min-h-0">
           <CodeEditor
             id={data.uid}
+            langId={langId}
             code={code}
             memoizedSetCode={memoizedSetCode}
             pageType={pageType}
@@ -79,7 +157,7 @@ const SoloProblemPage = () => {
         <div className=" flex-shrink-0">
           <Execution
             id={data.uid}
-            langId={52}
+            langId={langId}
             setOutput={setOutput}
             setSubmissionOutput={setSubmissionOutput}
             saveToLocalStorage={saveToLocalStorage}

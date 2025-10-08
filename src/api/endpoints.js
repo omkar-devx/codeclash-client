@@ -11,6 +11,7 @@ export const API_ENDPOINTS = {
     PROBLEMSET: "/questions/problemset",
     MULTIPLEQUESTIONS: "/questions/multiple-question",
     QUESTIONSEARCH: "/questions/search",
+    ISSUBMITTED: (questionId) => `/questions/issubmit/${questionId}`,
     FINDBYID: (questionId) => `/questions/id/${questionId}`,
     QUESTIONLIKE: (questionId) => `/questions/${questionId}/like`,
     QUESTIONCOMMENT: (questionId) => `/questions/${questionId}/comment`,
