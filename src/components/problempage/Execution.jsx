@@ -43,8 +43,9 @@ const Execution = React.memo(
 
     const getSourceFromLocal = () => {
       try {
+        console.log("this is page type : ", pageType);
         const item = localStorage.getItem(
-          `${pageType}:uid:${langId}:${id.toString()}`
+          `${pageType}:uid:${id.toString()}:lang:${langId}`
         );
         return item ? JSON.parse(item) : null;
       } catch (err) {
@@ -54,6 +55,7 @@ const Execution = React.memo(
 
     const handleRun = async () => {
       const source_code = getSourceFromLocal();
+      console.log("before running", id, langId, source_code);
       if (!id || !langId || !source_code) return toast.error("Missing fields");
       console.log("running -> ", source_code);
       try {

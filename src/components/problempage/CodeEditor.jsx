@@ -10,7 +10,7 @@ const CodeEditor = React.memo(
     const timerRef = useRef(null);
 
     const makeKey = useCallback(
-      (lid) => `${pageType}:uid:${lid}:${id?.toString()}`,
+      (lid) => `${pageType}:uid:${id?.toString()}:lang:${lid}`,
       [pageType, id]
     );
 

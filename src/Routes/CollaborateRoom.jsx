@@ -4,13 +4,14 @@ import {
   getRoomUsers,
   getUsersOnline,
 } from "@/api/services/collaborateService";
-import { Description, Execution, Input } from "@/components";
+import { Description, Execution, Input, Output } from "@/components";
 import ActiveUsers from "@/components/problempage/collaborative/ActiveUsers";
 import Chatbox from "@/components/problempage/collaborative/Chatbox.jsx";
 import CollaborativeEditor from "@/components/problempage/collaborative/CollaborativeEditor";
 import LeaveRoom from "@/components/problempage/collaborative/LeaveRoom";
 import ReadOnlyCodeEditor from "@/components/problempage/collaborative/ReadOnlyCodeEditor";
 import RoomControler from "@/components/problempage/collaborative/RoomControler";
+import EditorTools from "@/components/problempage/EditorTools";
 import checkAuth from "@/utils/checkAuth";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
@@ -30,6 +31,13 @@ const CollaborateRoom = () => {
   const [output, setOutput] = useState([]);
   const [roomChecked, setRoomChecked] = useState(false);
   const [currentUser, setCurrentUser] = useState("");
+
+  const [langId, setLangId] = useState(54);
+  const [code, setCode] = useState(null);
+  const [submissionOutput, setSubmissionOutput] = useState(null);
+  const [toggleOutput, setToggleOutput] = useState(false);
+  const [toggleSubmission, setToggleSubmission] = useState(false);
+  const [defaultCode, setDefaultCode] = useState("");
 
   // get currentUser
   const { data: user, isPending: isUserPending } = useQuery({
@@ -62,7 +70,7 @@ const CollaborateRoom = () => {
     refetchInterval: 2000,
   });
 
-  // get users online (you can keep or remove polling later)
+  // get users online
   const { data: usersOnline } = useQuery({
     queryKey: ["onlineUsers", roomId],
     queryFn: () => getUsersOnline({ roomId }),
@@ -102,10 +110,9 @@ const CollaborateRoom = () => {
     navigate,
   ]);
 
-  // --- Simple auto-select: set currentUser to the logged-in username once (so they see their editor) ---
   useEffect(() => {
     if (!user?.username) return;
-    if (currentUser) return; // don't stomp a manual selection
+    if (currentUser) return;
     setCurrentUser(user.username);
   }, [user, currentUser]);
 
@@ -115,13 +122,14 @@ const CollaborateRoom = () => {
       items.push(
         <button
           key={len}
-          className={`w-8 cursor-pointer h-8 my-1 mx-1 rounded ${
-            selectedQuestion === len - 1 ? "bg-blue-600" : "bg-red-600"
-          } text-white text-sm`}
+          className={`w-8 cursor-pointer h-8 my-1 mx-1 rounded-full flex items-center justify-center text-sm font-medium transition-shadow
+            ${selectedQuestion === len - 1 ? "bg-blue-600 text-white shadow" : "bg-gray-100 text-gray-700 hover:shadow-md"}`}
           onClick={() => {
             setSelectedQuestion(len - 1);
             setOutput([]);
           }}
+          aria-label={`Question ${len}`}
+          title={`Question ${len}`}
         >
           {len}
         </button>
@@ -131,87 +139,138 @@ const CollaborateRoom = () => {
   };
 
   const currentQuestion = questions?.[selectedQuestion];
-  if (!currentQuestion) return <p>loading question...</p>;
+  if (!currentQuestion)
+    return <p className="p-4 text-sm text-gray-600">loading question...</p>;
 
-  // If roomUsers isn't loaded yet, show a simple loading state
-  if (!questions || !roomUsers) return <p>loading...</p>;
+  if (!questions || !roomUsers)
+    return <p className="p-4 text-sm text-gray-600">loading...</p>;
 
   return (
-    <div className="grid grid-cols-[50px_0.6fr_1fr_0.6fr] gap-1 h-screen ">
-      <div className="border-2 border-red-500 ">{renderQuestionNumber()}</div>
-
-      <div className="border-1 border-green-500">
-        <Description question={currentQuestion} />
-      </div>
-
-      <div className="border-1 border-yellow-500 flex flex-col gap-1">
-        <div className="border-1 border-red-500 h-[3rem] flex gap-2 items-center">
-          {roomUsers.map((u) => {
-            const name = typeof u === "string" ? u : (u?.username ?? "unknown");
-            return (
-              <div
-                key={typeof u === "string" ? u : (u?.id ?? name)}
-                className={`border-1 border-black cursor-pointer px-2 rounded ${
-                  currentUser === name ? "bg-red-600 text-white" : "bg-amber-50"
-                }`}
-                onClick={() => setCurrentUser(name)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") setCurrentUser(name);
-                }}
-                aria-label={`Select user ${name}`}
-              >
-                {name}
-              </div>
-            );
-          })}
+    <div className="h-screen bg-gray-50 overflow-hidden">
+      <div className="h-full p-3 gap-3 flex flex-col md:grid md:grid-cols-[40px_0.8fr_1fr_0.7fr]">
+        <div className="flex flex-col items-center min-h-0">
+          <div className="sticky top-6 flex flex-col items-center rounded-md p-1">
+            {renderQuestionNumber()}
+          </div>
         </div>
 
-        <div className="border-1 border-green-500 h-full">
-          <div>
-            {currentUser && currentUser === user?.username ? (
-              <div>
-                <CollaborativeEditor
-                  key={`${currentUser}::${currentQuestion.uid}`}
-                  roomId={roomId}
-                  userId={currentUser}
-                  id={currentQuestion.uid}
-                  language="cpp"
-                  pageType={pageType}
-                />
-                <Execution
-                  key={`exec::${currentQuestion.uid}`}
-                  id={currentQuestion.uid}
-                  langId={52}
-                  setOutput={setOutput}
-                  pageType={pageType}
-                  selectedQuestion={selectedQuestion}
-                />
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden flex flex-col min-h-0">
+          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-gray-800">Description</h3>
+            <div className="text-xs text-gray-500">
+              {currentQuestion?.title ?? ""}
+            </div>
+          </div>
+          <div className="p-4 overflow-auto min-h-0">
+            <Description question={currentQuestion} />
+          </div>
+          <div className="px-4 py-2 border-t border-gray-100 text-xs text-gray-500 flex justify-between">
+            <div>Difficulty: {currentQuestion?.difficulty ?? "NA"}</div>
+            <div>UID: {currentQuestion?.uid}</div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden flex flex-col min-h-0">
+          <div className="px-3 py-2 border-b border-gray-100 flex justify-between gap-2 items-center overflow-auto">
+            <div className="flex gap-2 items-center overflow-auto">
+              {roomUsers.map((u) => {
+                const name =
+                  typeof u === "string" ? u : (u?.username ?? "unknown");
+                return (
+                  <div
+                    key={typeof u === "string" ? u : (u?.id ?? name)}
+                    className={`cursor-pointer px-3 py-1 rounded-md text-xs font-medium select-none transition
+                    ${currentUser === name ? "bg-blue-600 text-white shadow" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+                    onClick={() => setCurrentUser(name)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ")
+                        setCurrentUser(name);
+                    }}
+                    aria-label={`Select user ${name}`}
+                  >
+                    {name}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-md shadow-sm w-fit">
+              <span className="text-sm font-medium text-gray-600">
+                Language:
+              </span>
+              <span className="text-sm font-semibold text-blue-600 uppercase">
+                CPP
+              </span>
+            </div>
+          </div>
+
+          <div className="flex-1 overflow-hidden p-3 min-h-0">
+            <div className="h-full flex flex-col min-h-0">
+              <div className="flex-1 overflow-auto min-h-0">
+                {currentUser && currentUser === user?.username ? (
+                  <div className="h-full min-h-0">
+                    <CollaborativeEditor
+                      key={`${currentUser}::${currentQuestion.uid}`}
+                      roomId={roomId}
+                      userId={currentUser}
+                      id={currentQuestion.uid}
+                      language="cpp"
+                      pageType={pageType}
+                      defaultCode={currentQuestion.defaultCode}
+                    />
+                  </div>
+                ) : (
+                  <ReadOnlyCodeEditor
+                    key={`ro::${currentUser}::${currentQuestion.uid}`}
+                    roomId={roomId}
+                    id={currentQuestion.uid}
+                    language="cpp"
+                    targetUserId={currentUser}
+                  />
+                )}
               </div>
-            ) : (
-              <ReadOnlyCodeEditor
-                key={`ro::${currentUser}::${currentQuestion.uid}`}
-                roomId={roomId}
-                id={currentQuestion.uid}
-                language="cpp"
-                targetUserId={currentUser}
+
+              <div className="mt-3 px-1 text-xs text-gray-500 flex justify-between items-center">
+                <div>
+                  Editing as:{" "}
+                  <span className="font-medium text-gray-700">
+                    {currentUser || "-"}
+                  </span>
+                </div>
+                <div>Question #{selectedQuestion + 1}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden flex flex-col min-h-0">
+          <div className="px-3 py-2 border-b border-gray-100 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Input
+                value={roomId}
+                disabled={true}
+                className="w-[7rem] text-xs bg-transparent px-0"
               />
-            )}
+              <Copy
+                className="w-5 h-5 cursor-pointer text-gray-600"
+                onClick={handleCopy}
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <LeaveRoom currentRoom={currentRoom} user={user} />
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div className="border-1 border-blue-500">
-        <div className="flex justify-around items-center border-1 border-blue-700 my-1 ">
-          <div className="flex items-center gap-2">
-            <Input value={roomId} disabled={true} className="w-[7rem]" />
-            <Copy className="w-5 cursor-pointer" onClick={handleCopy} />
+          <div className="px-3 py-2 border-b border-gray-100">
+            <ActiveUsers />
           </div>
-          <LeaveRoom currentRoom={currentRoom} user={user} />
+
+          <div className="flex-1 overflow-auto p-3 min-h-0">
+            <Chatbox user={user} currentRoom={currentRoom} />
+          </div>
         </div>
-        <ActiveUsers />
-        <Chatbox user={user} currentRoom={currentRoom} />
       </div>
     </div>
   );

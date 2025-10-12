@@ -13,7 +13,7 @@ const SoloProblemPage = () => {
   const pageType = "solo";
   const queryClient = useQueryClient();
   const previousCode = localStorage.getItem(
-    `${pageType}:uid:54:${id.toString()}`
+    `${pageType}:uid:${id.toString()}:lang:54`
   );
   const [output, setOutput] = useState([]);
   const [submissionOutput, setSubmissionOutput] = useState(null);
@@ -36,7 +36,7 @@ const SoloProblemPage = () => {
   const saveToLocalStorage = useCallback(() => {
     if (id && code) {
       localStorage.setItem(
-        `${pageType}:uid:${langId}:${id.toString()}`,
+        `${pageType}:uid:${id.toString()}:lang:${langId}`,
         JSON.stringify(code)
       );
     }
@@ -55,7 +55,7 @@ const SoloProblemPage = () => {
   }, [defaultCode]);
 
   useEffect(() => {
-    const key = `${pageType}:uid:${langId}:${id?.toString()}`;
+    const key = `${pageType}:uid:${id?.toString()}:lang:${langId}`;
 
     let raw = null;
     try {

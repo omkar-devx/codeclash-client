@@ -3,26 +3,38 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, Input } from "../../";
 import { initSocket } from "@/websocket/socket";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  MainContainer,
-  ChatContainer,
-  MessageList,
-  Message,
-  MessageInput,
-} from "@chatscope/chat-ui-kit-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { getChatHistory } from "@/api/services/collaborateService";
-import { addChatHistory, addChatMessage } from "@/features/room/chatSlice";
+import { addChatHistory } from "@/features/room/chatSlice";
+
+/**
+ * Compact & professional Chatbox UI
+ * - Avatars removed (only username displayed)
+ * - Reduced padding and gaps for compact message height
+ * - Preserves all behavior (socket, Redux, grouping, normalization)
+ */
 
 const Chatbox = React.memo(({ user, currentRoom }) => {
-  const chats = useSelector((state) => state.chat.message);
+  const rawChats = useSelector((state) => state.chat.message);
   const dispatch = useDispatch();
   const [msg, setMsg] = useState("");
   const socketRef = useRef(null);
+  const listRef = useRef(null);
+
+  const normalizedChats = Array.isArray(rawChats)
+    ? rawChats.map((c) => {
+        if (!c) return { userId: "unknown", message: "" };
+        if (typeof c === "string") return { userId: "unknown", message: c };
+        return {
+          userId: c.userId ?? c.userid ?? c.user ?? "unknown",
+          message: c.message ?? c.text ?? String(c),
+          createdAt: c.createdAt ?? c.timestamp ?? c.time ?? c.ts ?? null,
+        };
+      })
+    : [];
 
   const handleSendMsg = () => {
     if (socketRef.current && msg.trim() && currentRoom && user) {
-      // console.log("chat", socketRef.current);
       const data = {
         type: "chat",
         payload: {
@@ -37,7 +49,7 @@ const Chatbox = React.memo(({ user, currentRoom }) => {
     }
   };
 
-  const { data: chatHistory, mutate: chatHistoryMutation } = useMutation({
+  const { mutate: chatHistoryMutation } = useMutation({
     mutationFn: ({ roomId }) => getChatHistory({ roomId }),
     onSuccess: (res) => {
       dispatch(addChatHistory(res));
@@ -61,67 +73,149 @@ const Chatbox = React.memo(({ user, currentRoom }) => {
       };
 
       return () => {
-        socket.close();
+        try {
+          socket.close();
+        } catch (e) {
+          /* ignore */
+        }
         socketRef.current = null;
       };
     }
   }, [user, currentRoom]);
 
-  return (
-    <div>
-      <div className="h-[20rem] border-2 border-red-600">
-        <MainContainer>
-          <ChatContainer>
-            <MessageList>
-              {chats &&
-                chats.map((msg, idx) => (
-                  <Message
-                    key={idx}
-                    model={{
-                      // this message won't be shown, we use CustomContent instead
-                      message: "",
-                      direction:
-                        msg.userId === user.username ? "outgoing" : "incoming",
-                    }}
-                  >
-                    <Message.CustomContent>
-                      <div style={{ display: "flex", flexDirection: "column" }}>
-                        <span
-                          style={{
-                            fontSize: "0.75rem",
-                            color: "#888",
-                            marginBottom: "4px",
-                          }}
-                        >
-                          {msg.userId}
-                        </span>
+  const grouped = [];
+  for (let i = 0; i < normalizedChats.length; i++) {
+    const cur = normalizedChats[i];
+    const prev = grouped[grouped.length - 1];
+    if (prev && prev.userId === cur.userId) {
+      prev.messages.push(cur);
+    } else {
+      grouped.push({ userId: cur.userId, messages: [cur] });
+    }
+  }
 
+  useEffect(() => {
+    if (!listRef.current) return;
+    const t = setTimeout(() => {
+      try {
+        listRef.current.scrollTop = listRef.current.scrollHeight;
+      } catch (e) {
+        // ignore
+      }
+    }, 60);
+    return () => clearTimeout(t);
+  }, [normalizedChats.length]);
+
+  const formatTime = (t) => {
+    if (!t) return null;
+    try {
+      const d = typeof t === "number" ? new Date(t) : new Date(t);
+      if (isNaN(d.getTime())) return null;
+      const hh = d.getHours().toString().padStart(2, "0");
+      const mm = d.getMinutes().toString().padStart(2, "0");
+      return `${hh}:${mm}`;
+    } catch {
+      return null;
+    }
+  };
+
+  return (
+    <div className="flex flex-col h-full gap-2">
+      <div className="bg-white rounded-md border border-gray-200 shadow-sm overflow-hidden flex flex-col flex-1">
+        <div className="px-3 py-2 border-b border-gray-100">
+          <div className="text-sm font-medium text-gray-800">Room Chat</div>
+          <div className="text-xs text-gray-500">
+            Keep messages short and clear
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-hidden">
+          <div
+            ref={listRef}
+            className="px-3 py-3 h-full overflow-auto flex flex-col"
+            style={{ gap: "6px" }}
+          >
+            {grouped.length === 0 ? (
+              <div className="text-xs text-gray-400 italic">
+                No messages yet — say hello 👋
+              </div>
+            ) : (
+              grouped.map((group, gi) => {
+                const isMe = group.userId === user?.username;
+                const lastMsg = group.messages[group.messages.length - 1];
+                const time = formatTime(lastMsg?.createdAt);
+                return (
+                  <div
+                    key={gi}
+                    className={`flex ${isMe ? "justify-end" : "justify-start"}`}
+                  >
+                    <div
+                      className={`flex ${isMe ? "flex-row-reverse items-end" : "items-start"}`}
+                    >
+                      <div className="max-w-[82%]">
                         <div
-                          style={{
-                            backgroundColor:
-                              msg.userId === user.username ? "#DCF8C6" : "#FFF",
-                            color: "#000",
-                            padding: "8px 12px",
-                            borderRadius: "8px",
-                            maxWidth: "80%",
-                            wordWrap: "break-word",
-                          }}
+                          className={`text-[0.72rem] mb-1 ${isMe ? "text-right text-gray-500" : "text-left text-gray-500"}`}
                         >
-                          {msg.message}
+                          {group.userId}
+                        </div>
+
+                        <div className="flex flex-col gap-1">
+                          {group.messages.map((m, mi) => (
+                            <div
+                              key={mi}
+                              className={`px-3 py-1.5 max-w-100 text-sm leading-tight rounded-lg break-words shadow-sm ${
+                                isMe
+                                  ? "bg-blue-600 text-white self-end"
+                                  : "bg-gray-50 border border-gray-100 text-gray-800 self-start"
+                              }`}
+                            >
+                              {m.message}
+                            </div>
+                          ))}
+
+                          {time && (
+                            <div
+                              className={`text-[0.68rem] mt-1 ${isMe ? "text-white/80 text-right" : "text-gray-400 text-left"}`}
+                            >
+                              {time}
+                            </div>
+                          )}
                         </div>
                       </div>
-                    </Message.CustomContent>
-                  </Message>
-                ))}
-            </MessageList>
-          </ChatContainer>
-        </MainContainer>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
       </div>
-      <div>
-        <Input value={msg} onChange={(e) => setMsg(e.target.value)} />
-        <Button disabled={!socketRef.current} onClick={handleSendMsg}>
-          Send
-        </Button>
+
+      <div className="flex items-center gap-2">
+        <div className="flex-1">
+          <Input
+            value={msg}
+            onChange={(e) => setMsg(e.target.value)}
+            placeholder="Type a message..."
+            className="bg-white border border-gray-200 rounded-md px-3 py-2 text-sm w-full"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSendMsg();
+              }
+            }}
+          />
+        </div>
+
+        <div>
+          <Button
+            disabled={!socketRef.current}
+            onClick={handleSendMsg}
+            className="px-4 py-2"
+          >
+            Send
+          </Button>
+        </div>
       </div>
     </div>
   );
