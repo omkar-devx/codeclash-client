@@ -149,7 +149,7 @@ const CollaborativeEditor = React.memo(
           </div>
         </div>
 
-        <div className="absolute left-0 right-0 bottom-0 pointer-events-none">
+        <div className="absolute max-h-70 left-0 right-0 bottom-0 pointer-events-none">
           <div className="pointer-events-auto">
             <Output
               toggleOutput={toggleOutput}

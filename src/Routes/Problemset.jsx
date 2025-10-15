@@ -1,42 +1,32 @@
 import { problemset } from "@/api/services/questionService";
-import { useMutation, useQuery } from "@tanstack/react-query";
-// import { LoaderCircle, Sidebar } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import {
   Table,
   TableBody,
   TableCaption,
   TableCell,
-  TableFooter,
-  TableHead,
   TableHeader,
+  TableHead,
   TableRow,
 } from "@/components/ui/table";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "@tanstack/react-router";
-import JoinRoomBox from "@/components/JoinRoomBox";
 import { getCurrentRoom } from "@/api/services/collaborateService";
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components";
+import { Card } from "@/components/ui/card";
 import SearchQuestions from "@/components/SearchQuestions";
 import Sidebar from "@/components/Sidebar";
 import { LoaderCircle } from "lucide-react";
+import CreateRoomConfig from "@/components/problempage/collaborative/CreateRoomConfig";
 
 const Problemset = () => {
   const navigate = useNavigate();
+  const [toggleCreateRoomConfig, setToggleCreateRoomConfig] = useState(false);
+
   const {
-    data: problems,
+    data: problems = [],
     isPending: problemPending,
     isError: problemError,
-    isSuccess: problemSuccess,
   } = useQuery({
     queryKey: ["problemset"],
     queryFn: problemset,
@@ -60,67 +50,137 @@ const Problemset = () => {
 
   if (problemPending) {
     return (
-      <>
-        <LoaderCircle className="animate-spin w-6 h-6" />
-      </>
+      <div className="w-full h-screen flex items-center justify-center p-4 bg-slate-950">
+        <LoaderCircle className="animate-spin w-12 h-12 text-blue-400" />
+      </div>
     );
   }
 
   return (
-    <div className="px-4 py-2 h-screen flex gap-1">
-      <Card className="w-[77%] h-full bg-muted ">
-        <CardHeader>
-          <SearchQuestions />
-        </CardHeader>
-        <div className="px-5">
-          <Table>
-            <TableCaption>Code Clash Problemset</TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Question Id</TableHead>
-                <TableHead>Title</TableHead>
-                <TableHead>Level</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {problems.map((question) => (
-                <TableRow
-                  onClick={() =>
-                    navigate({
-                      to: `/problemset/question/$id/$title`,
-                      params: {
-                        id: question.uid,
-                        title: slugify(question.title),
-                      },
-                    })
-                  }
-                  key={question.uid}
-                >
-                  <TableCell>{question.uid}</TableCell>
-                  <TableCell>{question.title}</TableCell>
-                  <TableCell
-                    className={`font-bold
-                    ${
-                      question.difficulty === "easy"
-                        ? "text-green-500"
-                        : question.difficulty === "medium"
-                          ? "text-orange-400"
-                          : "text-red-600"
-                    }
-                    `}
-                  >
-                    {question.difficulty}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+    <div className="w-full h-screen bg-slate-950 p-2 md:p-3 relative">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+                           linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px)`,
+            backgroundSize: "50px 50px",
+          }}
+        ></div>
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+      </div>
+
+      <div className="w-full h-full flex flex-col md:flex-row gap-2 relative z-10">
+        <div className="flex-1 h-full overflow-hidden bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-800 shadow-xl">
+          <div className="sticky top-0 z-20 bg-slate-900/90 backdrop-blur-sm border-b border-slate-800 px-3 py-2">
+            <SearchQuestions />
+          </div>
+
+          <div className="px-3 pb-3 pt-2 h-full">
+            <div className="overflow-y-auto h-[calc(100%_-_3.25rem)] pr-2 custom-scrollbar">
+              <Table>
+                <TableCaption className="text-sm text-slate-500">
+                  CodeClash Problemset
+                </TableCaption>
+                <TableHeader>
+                  <TableRow className="border-b border-slate-800 hover:bg-transparent">
+                    <TableHead className="w-28 text-slate-400 font-semibold">
+                      Question Id
+                    </TableHead>
+                    <TableHead className="text-slate-400 font-semibold">
+                      Title
+                    </TableHead>
+                    <TableHead className="w-28 text-slate-400 font-semibold">
+                      Level
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {problems.map((question) => (
+                    <TableRow
+                      onClick={() =>
+                        navigate({
+                          to: `/problemset/question/$id/$title`,
+                          params: {
+                            id: question.uid,
+                            title: slugify(question.title),
+                          },
+                        })
+                      }
+                      key={question.uid}
+                      className="cursor-pointer hover:bg-slate-800/50 transition-colors border-b border-slate-800/50"
+                    >
+                      <TableCell className="font-mono text-sm text-slate-300">
+                        {question.uid}
+                      </TableCell>
+                      <TableCell className="truncate max-w-[60ch] text-sm text-slate-300">
+                        {question.title}
+                      </TableCell>
+                      <TableCell
+                        className={`font-semibold whitespace-nowrap text-sm
+                          ${
+                            question.difficulty === "easy"
+                              ? "text-green-400"
+                              : question.difficulty === "medium"
+                                ? "text-yellow-400"
+                                : "text-red-400"
+                          }
+                        `}
+                      >
+                        {question.difficulty}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+
+              {problems.length === 0 && (
+                <div className="mt-4 text-center text-slate-400">
+                  No questions found.
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-      </Card>
-      <Sidebar
-        currentRoom={currentRoom}
-        currentRoomPending={currentRoomPending}
-      />
+
+        <div className="w-full md:w-72 lg:w-80 h-full">
+          <div className="h-full">
+            <Sidebar
+              currentRoom={currentRoom}
+              currentRoomPending={currentRoomPending}
+              setToggleCreateRoomConfig={setToggleCreateRoomConfig}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <CreateRoomConfig
+          problems={problems}
+          currentRoom={currentRoom}
+          currentRoomPending={currentRoomPending}
+          toggleCreateRoomConfig={toggleCreateRoomConfig}
+          setToggleCreateRoomConfig={setToggleCreateRoomConfig}
+        />
+      </div>
+
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(15, 23, 42, 0.3);
+          border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(59, 130, 246, 0.3);
+          border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(59, 130, 246, 0.5);
+        }
+      `}</style>
     </div>
   );
 };

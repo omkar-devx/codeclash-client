@@ -1,3 +1,4 @@
+// FILE: SoloProblemPage.refactor.jsx
 import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -40,7 +41,7 @@ const SoloProblemPage = () => {
         JSON.stringify(code)
       );
     }
-  }, [id, code]);
+  }, [id, code, langId]);
 
   useEffect(() => {
     if (data?.defaultCode) {
@@ -78,23 +79,16 @@ const SoloProblemPage = () => {
       storedCode !== undefined &&
       !(typeof storedCode === "string" && storedCode.trim() === "");
 
-    console.log({ key, raw, storedCode, hasStored, defaultCode });
-
     if (hasStored) {
       setCode(storedCode);
-      console.log("Loaded stored code");
       return;
     }
 
     if (defaultCode) {
-      // console.log("this is default code : ", defaultCode.python);
-      // console.log(getCodeByLang(langId, defaultCode));
       setCode(getCodeByLang(langId, defaultCode) || "");
-      console.log("Loaded default code for language");
       return;
     }
 
-    // fallback to empty
     setCode("");
   }, [langId, id, defaultCode, pageType, defaultCode]);
 
@@ -120,41 +114,88 @@ const SoloProblemPage = () => {
 
   if (isPending) {
     return (
-      <>
-        <LoaderCircle />
-      </>
+      <div className="w-full h-full flex items-center justify-center p-6">
+        <LoaderCircle className="animate-spin w-12 h-12 text-blue-600" />
+      </div>
     );
   }
 
   if (isError) {
     toast.error(error?.message || "Something went wrong!");
-    return <p>Error loading problem.</p>;
+    return <p className="p-4 text-red-600">Error loading problem.</p>;
   }
 
   return (
-    <div className="grid grid-cols-[1fr_1fr] gap-2 px-2 h-full min-h-0">
-      <div className="h-full overflow-auto min-h-0 border-1 border-red-600">
-        <Description question={data} />
+    <div className="grid grid-cols-[1fr_1fr] gap-4 px-3 py-2 h-full min-h-0">
+      {/* LEFT: Problem description */}
+      <div className="h-full overflow-auto min-h-0 bg-white rounded-lg shadow-sm border border-slate-100 p-6">
+        <div className="prose max-w-none text-slate-700">
+          <Description question={data} />
+        </div>
       </div>
 
-      <div className="h-full flex flex-col min-h-0 border-1 border-blue-700 relative">
-        <EditorTools
-          defaultCode={defaultCode}
-          code={code}
-          setCode={setCode}
-          langId={langId}
-          setLangId={setLangId}
-        />
-        <div className="flex-1 overflow-auto min-h-0">
-          <CodeEditor
-            id={data.uid}
-            langId={langId}
+      {/* RIGHT: Editor + tools + execution + outputs */}
+      <div className="h-full flex flex-col min-h-0 bg-white rounded-lg shadow-sm border border-slate-100 relative overflow-hidden">
+        {/* Editor tools (kept in place) */}
+        <div className="sticky top-0 z-10 bg-white border-b px-1 py-2">
+          <EditorTools
+            defaultCode={defaultCode}
             code={code}
-            memoizedSetCode={memoizedSetCode}
-            pageType={pageType}
+            setCode={setCode}
+            langId={langId}
+            setLangId={setLangId}
           />
         </div>
-        <div className=" flex-shrink-0">
+
+        {/* Code editor area */}
+        <div className="flex-1 overflow-auto min-h-0 p-2">
+          {/* Make this container relative so overlays inside it match the editor width */}
+          <div className="h-full rounded-md overflow-hidden border border-slate-100 relative">
+            <CodeEditor
+              id={data.uid}
+              langId={langId}
+              code={code}
+              memoizedSetCode={memoizedSetCode}
+              pageType={pageType}
+            />
+
+            {/* Output & SubmissionResult moved INSIDE the editor container so their width exactly matches the editor */}
+            <div
+              className={`absolute left-0 right-0 bottom-0 z-20 max-h-60 flex justify-center transition-all ${
+                toggleOutput || toggleSubmission
+                  ? "opacity-100"
+                  : "opacity-0 pointer-events-none"
+              }`}
+            >
+              {/* overlay area matches editor width and is half the editor height */}
+              <div className="w-full h-1/2 flex gap-1">
+                <div
+                  className={`${toggleOutput ? "block" : "hidden"} w-full h-full bg-white rounded-md border border-slate-200 shadow p-4 overflow-auto`}
+                >
+                  <Output
+                    toggleOutput={toggleOutput}
+                    setToggleOutput={setToggleOutput}
+                    outputs={output}
+                  />
+                </div>
+
+                <div
+                  className={`${toggleSubmission ? "block" : "hidden"} w-full h-full bg-white rounded-md border border-slate-200 shadow p-4 overflow-auto`}
+                >
+                  <SubmissionResult
+                    toggleSubmission={toggleSubmission}
+                    setToggleSubmission={setToggleSubmission}
+                    setSubmissionOutput={setSubmissionOutput}
+                    submissionOutput={submissionOutput}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Execution controls */}
+        <div className="flex-shrink-0 border-t bg-slate-50 px-2 py-1">
           <Execution
             id={data.uid}
             langId={langId}
@@ -164,21 +205,6 @@ const SoloProblemPage = () => {
             pageType={pageType}
             setToggleOutput={setToggleOutput}
             setToggleSubmission={setToggleSubmission}
-          />
-        </div>
-        <div className="absolute w-full bottom-0 overflow-auto">
-          <Output
-            toggleOutput={toggleOutput}
-            setToggleOutput={setToggleOutput}
-            outputs={output}
-          />
-        </div>
-        <div className="absolute w-full bottom-0 overflow-auto">
-          <SubmissionResult
-            toggleSubmission={toggleSubmission}
-            setToggleSubmission={setToggleSubmission}
-            setSubmissionOutput={setSubmissionOutput}
-            submissionOutput={submissionOutput}
           />
         </div>
       </div>

@@ -10,6 +10,7 @@ import Register from "./Register";
 import Problemset from "./Problemset";
 import SoloProblemPage from "./SoloProblemPage";
 import CollaborateRoom from "./CollaborateRoom";
+import UserProfile from "./UserProfile";
 
 const rootRoute = createRootRoute({ component: Layout });
 
@@ -49,6 +50,12 @@ const collaborateRoom = createRoute({
   component: CollaborateRoom,
 });
 
+const userProfile = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/user/$username",
+  component: UserProfile,
+});
+
 const routeTree = rootRoute.addChildren([
   homeRoute,
   loginRoute,
@@ -56,6 +63,7 @@ const routeTree = rootRoute.addChildren([
   problemsetRoute,
   collaborateRoom,
   soloProblemRoute,
+  userProfile,
 ]);
 
 export const router = createRouter({ routeTree });

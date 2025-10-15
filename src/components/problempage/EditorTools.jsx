@@ -39,7 +39,7 @@ const EditorTools = React.memo(
     };
 
     return (
-      <div className="flex justify-between items-center px-5 bg-white shadow-md border border-zinc-700">
+      <div className="flex justify-between items-center px-2 bg-white shadow-md ">
         <div className="flex items-center gap-2">
           <label htmlFor="language" className="text-sm font-medium ">
             Language:
@@ -59,14 +59,14 @@ const EditorTools = React.memo(
         <div className="flex gap-4 items-center">
           <button
             onClick={handleCopy}
-            className="p-2 rounded-md hover:bg-gray-500 transition-all duration-150 cursor-pointer"
+            className="p-2 rounded-md hover:bg-blue-300 transition-all duration-150 cursor-pointer"
             title="Copy Code"
           >
             <Copy className="w-5 h-5" />
           </button>
           <button
             onClick={() => handleReset(langId, defaultCode)}
-            className="p-2 rounded-md hover:bg-gray-500 transition-all duration-150 cursor-pointer"
+            className="p-2 rounded-md hover:bg-blue-300 transition-all duration-150 cursor-pointer"
             title="Reset Code"
           >
             <Repeat2 className="w-5 h-5" />

@@ -117,7 +117,7 @@ const Execution = React.memo(
     const disabled = runPending || submitPending || busy;
 
     return (
-      <div className="bg-gray-50 border-t border-gray-200 py-3 px-5 flex justify-between items-center shadow-sm">
+      <div className="bg-gray-50 border-t border-gray-200 py-1 px-2 flex justify-between items-center ">
         {user ? (
           <>
             <div className="flex gap-3">
