@@ -39,16 +39,19 @@ const EditorTools = React.memo(
     };
 
     return (
-      <div className="flex justify-between items-center px-2 bg-white shadow-md ">
+      <div className="flex justify-between items-center px-3 bg-slate-900/50 backdrop-blur-sm border-b border-slate-800 py-2">
         <div className="flex items-center gap-2">
-          <label htmlFor="language" className="text-sm font-medium ">
+          <label
+            htmlFor="language"
+            className="text-sm font-medium text-slate-300"
+          >
             Language:
           </label>
           <select
             id="language"
             value={langId}
-            onChange={(e) => setLangId(Number(e.target.value))} // coerce to Number
-            className="border border-zinc-600 rounded-md px-3 py-1 text-sm focus:ring-2 cursor-pointer outline-none"
+            onChange={(e) => setLangId(Number(e.target.value))}
+            className="border border-slate-700 bg-slate-800/50 rounded-lg px-3 py-1.5 text-sm text-slate-300 focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 cursor-pointer outline-none transition-all"
           >
             <option value={54}>C++</option>
             <option value={62}>Java</option>
@@ -56,17 +59,17 @@ const EditorTools = React.memo(
           </select>
         </div>
 
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-3 items-center">
           <button
             onClick={handleCopy}
-            className="p-2 rounded-md hover:bg-blue-300 transition-all duration-150 cursor-pointer"
+            className="p-2 rounded-lg hover:bg-slate-700/50 transition-colors text-slate-400 hover:text-blue-400"
             title="Copy Code"
           >
             <Copy className="w-5 h-5" />
           </button>
           <button
             onClick={() => handleReset(langId, defaultCode)}
-            className="p-2 rounded-md hover:bg-blue-300 transition-all duration-150 cursor-pointer"
+            className="p-2 rounded-lg hover:bg-slate-700/50 transition-colors text-slate-400 hover:text-blue-400"
             title="Reset Code"
           >
             <Repeat2 className="w-5 h-5" />
@@ -77,4 +80,5 @@ const EditorTools = React.memo(
   }
 );
 
+EditorTools.displayName = "EditorTools";
 export default EditorTools;

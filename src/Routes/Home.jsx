@@ -167,7 +167,6 @@ export default function Home() {
         ></div>
       </div>
 
-      {/* All Content Wrapper */}
       <div className="relative bg-slate-950 z-10">
         {/* Navigation */}
         {/* <nav className="border-b border-slate-800/50 backdrop-blur-xl bg-slate-950/80">
@@ -222,7 +221,6 @@ export default function Home() {
           </div>
         </nav> */}
 
-        {/* Hero Section */}
         <section className="pt-20 pb-24">
           <div className="container mx-auto px-6">
             <div
@@ -262,7 +260,6 @@ export default function Home() {
                 </button>
               </div>
 
-              {/* Trusted by companies */}
               <div className="mt-16">
                 <p className="text-slate-500 text-xs font-medium mb-6 uppercase tracking-wider">
                   Trusted by engineers at
@@ -282,7 +279,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Stats Section */}
         <section className="py-16 border-y border-slate-800/50">
           <div className="container mx-auto px-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -322,7 +318,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Features Grid */}
         <section className="py-20">
           <div className="container mx-auto px-6">
             <div className="text-center mb-16">
@@ -357,7 +352,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Problem Categories */}
         <section className="py-20 bg-gradient-to-b from-transparent via-slate-900/50 to-transparent">
           <div className="container mx-auto px-6">
             <div className="text-center mb-16">
@@ -405,7 +399,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Testimonials */}
         <section className="py-20">
           <div className="container mx-auto px-6">
             <div className="text-center mb-16">
@@ -467,7 +460,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* CTA Section */}
         <section className="py-20">
           <div className="container mx-auto px-6">
             <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 rounded-3xl p-12 md:p-14 text-center">
@@ -491,7 +483,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Footer */}
         <footer className="border-t border-slate-800/50 bg-slate-950/50 backdrop-blur-xl">
           <div className="container mx-auto px-6 py-16">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">

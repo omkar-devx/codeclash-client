@@ -1,6 +1,7 @@
 import axios from "axios";
 import { API_ENDPOINTS } from "../endpoints";
 import api from "../axios";
+import toast from "react-hot-toast";
 
 // current user
 export const userCheck = async () => {
@@ -58,5 +59,24 @@ export const userLogout = async () => {
     await api.post(API_ENDPOINTS.AUTH.LOGOUT);
   } catch (error) {
     throw new Error(error.response?.data?.message || "User Logout Failed");
+  }
+};
+
+export const getUserProfile = async (username) => {
+  try {
+    console.log("this is username", username);
+    const res = await api.post(
+      `${API_ENDPOINTS.AUTH.GETUSERPROFILE(username)}`
+    );
+    if (!res) {
+      toast.error("something went wrong on userprofile");
+    }
+    // console.log(res.data);
+    return res.data.data;
+  } catch (error) {
+    toast.error(
+      error.response?.data?.message || "Something went wrong on server"
+    );
+    return {};
   }
 };

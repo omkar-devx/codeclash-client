@@ -9,7 +9,7 @@ const Sidebar = ({
   setToggleCreateRoomConfig,
 }) => {
   return (
-    <Card className="bg-slate-900/50 backdrop-blur-sm border-slate-800 w-full min-h-full h-auto p-4 shadow-lg border">
+    <Card className="bg-slate-900/50 backdrop-blur-sm border-slate-800 w-full  h-auto p-4 shadow-lg border">
       <JoinRoomBoxComponent
         currentRoom={currentRoom}
         currentRoomPending={currentRoomPending}

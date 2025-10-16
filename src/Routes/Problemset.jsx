@@ -38,6 +38,21 @@ const Problemset = () => {
     queryFn: getCurrentRoom,
   });
 
+  const getDifficultyColor = (difficulty = "") => {
+    const d = String(difficulty).trim().toLowerCase();
+
+    if (d === "easy") {
+      return "bg-green-500/20 text-green-400 border-green-500/30";
+    }
+    if (d === "medium") {
+      return "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
+    }
+    if (d === "hard") {
+      return "bg-red-500/20 text-red-400 border-red-500/30";
+    }
+    return "bg-slate-500/20 text-slate-400 border-slate-500/30";
+  };
+
   const slugify = (text) =>
     text
       .toLowerCase()
@@ -72,7 +87,7 @@ const Problemset = () => {
       </div>
 
       <div className="w-full h-full flex flex-col md:flex-row gap-2 relative z-10">
-        <div className="flex-1 h-full overflow-hidden bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-800 shadow-xl">
+        <div className="lg:flex-1 h-full overflow-hidden bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-800 shadow-xl">
           <div className="sticky top-0 z-20 bg-slate-900/90 backdrop-blur-sm border-b border-slate-800 px-3 py-2">
             <SearchQuestions />
           </div>
@@ -111,24 +126,18 @@ const Problemset = () => {
                       key={question.uid}
                       className="cursor-pointer hover:bg-slate-800/50 transition-colors border-b border-slate-800/50"
                     >
-                      <TableCell className="font-mono text-sm text-slate-300">
+                      <TableCell className="cursor-pointer font-mono text-sm text-slate-300">
                         {question.uid}
                       </TableCell>
-                      <TableCell className="truncate max-w-[60ch] text-sm text-slate-300">
+                      <TableCell className="cursor-pointer truncate max-w-[60ch] text-sm text-slate-300">
                         {question.title}
                       </TableCell>
-                      <TableCell
-                        className={`font-semibold whitespace-nowrap text-sm
-                          ${
-                            question.difficulty === "easy"
-                              ? "text-green-400"
-                              : question.difficulty === "medium"
-                                ? "text-yellow-400"
-                                : "text-red-400"
-                          }
-                        `}
-                      >
-                        {question.difficulty}
+                      <TableCell>
+                        <span
+                          className={`cursor-pointer px-2 py-1 rounded-lg text-xs font-medium border ${getDifficultyColor(question.difficulty)}`}
+                        >
+                          {question.difficulty}
+                        </span>
                       </TableCell>
                     </TableRow>
                   ))}

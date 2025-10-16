@@ -8,10 +8,11 @@ import { getChatHistory } from "@/api/services/collaborateService";
 import { addChatHistory } from "@/features/room/chatSlice";
 
 /**
- * Compact & professional Chatbox UI
+ * Compact & professional Chatbox UI with Dark Theme
  * - Avatars removed (only username displayed)
  * - Reduced padding and gaps for compact message height
  * - Preserves all behavior (socket, Redux, grouping, normalization)
+ * - Dark theme with custom scrollbar
  */
 
 const Chatbox = React.memo(({ user, currentRoom }) => {
@@ -121,23 +122,58 @@ const Chatbox = React.memo(({ user, currentRoom }) => {
 
   return (
     <div className="flex flex-col h-full gap-2">
-      <div className="bg-white rounded-md border border-gray-200 shadow-sm overflow-hidden flex flex-col flex-1">
-        <div className="px-3 py-2 border-b border-gray-100">
-          <div className="text-sm font-medium text-gray-800">Room Chat</div>
-          <div className="text-xs text-gray-500">
+      {/* Custom Scrollbar and Cursor Styles */}
+      <style>{`
+        .chat-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        .chat-scrollbar::-webkit-scrollbar-track {
+          background: rgba(15, 23, 42, 0.3);
+          border-radius: 4px;
+        }
+        .chat-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(59, 130, 246, 0.3);
+          border-radius: 4px;
+        }
+        .chat-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(59, 130, 246, 0.5);
+        }
+        
+        /* Custom Cursor */
+        * {
+          cursor: default;
+        }
+        button, [role="button"], .cursor-pointer {
+          cursor: pointer;
+        }
+        input, textarea, select {
+          cursor: text;
+        }
+        a {
+          cursor: pointer;
+        }
+      `}</style>
+
+      {/* Chat Container */}
+      <div className="bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-800 shadow-xl overflow-hidden flex flex-col flex-1">
+        {/* Header */}
+        <div className="px-4 py-3 border-b border-slate-800 bg-slate-900/80">
+          <div className="text-sm font-semibold text-white">Room Chat</div>
+          <div className="text-xs text-slate-400">
             Keep messages short and clear
           </div>
         </div>
 
+        {/* Messages Area */}
         <div className="flex-1 overflow-hidden">
           <div
             ref={listRef}
-            className="px-3 py-3 h-full overflow-auto flex flex-col"
+            className="px-3 py-3 h-full overflow-auto flex flex-col chat-scrollbar"
             style={{ gap: "6px" }}
           >
             {grouped.length === 0 ? (
-              <div className="text-xs text-gray-400 italic">
-                No messages yet — say hello 👋
+              <div className="text-xs text-slate-500 italic">
+                No messages yet — say hello
               </div>
             ) : (
               grouped.map((group, gi) => {
@@ -150,32 +186,45 @@ const Chatbox = React.memo(({ user, currentRoom }) => {
                     className={`flex ${isMe ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`flex ${isMe ? "flex-row-reverse items-end" : "items-start"}`}
+                      className={`flex ${
+                        isMe ? "flex-row-reverse items-end" : "items-start"
+                      }`}
                     >
                       <div className="max-w-[82%]">
+                        {/* Username */}
                         <div
-                          className={`text-[0.72rem] mb-1 ${isMe ? "text-right text-gray-500" : "text-left text-gray-500"}`}
+                          className={`text-[0.72rem] mb-1 ${
+                            isMe
+                              ? "text-right text-slate-500"
+                              : "text-left text-slate-500"
+                          }`}
                         >
                           {group.userId}
                         </div>
 
+                        {/* Messages */}
                         <div className="flex flex-col gap-1">
                           {group.messages.map((m, mi) => (
                             <div
                               key={mi}
-                              className={`px-3 py-1.5 max-w-100 text-sm leading-tight rounded-lg break-words shadow-sm ${
+                              className={`px-3 py-1.5 max-w-100 text-sm leading-tight rounded-lg break-words shadow-md ${
                                 isMe
-                                  ? "bg-blue-600 text-white self-end"
-                                  : "bg-gray-50 border border-gray-100 text-gray-800 self-start"
+                                  ? "bg-blue-600 text-white self-end shadow-blue-600/30"
+                                  : "bg-slate-800 border border-slate-700 text-slate-300 self-start"
                               }`}
                             >
                               {m.message}
                             </div>
                           ))}
 
+                          {/* Timestamp */}
                           {time && (
                             <div
-                              className={`text-[0.68rem] mt-1 ${isMe ? "text-white/80 text-right" : "text-gray-400 text-left"}`}
+                              className={`text-[0.68rem] mt-1 ${
+                                isMe
+                                  ? "text-slate-400 text-right"
+                                  : "text-slate-500 text-left"
+                              }`}
                             >
                               {time}
                             </div>
@@ -191,13 +240,14 @@ const Chatbox = React.memo(({ user, currentRoom }) => {
         </div>
       </div>
 
+      {/* Input Area */}
       <div className="flex items-center gap-2">
         <div className="flex-1">
           <Input
             value={msg}
             onChange={(e) => setMsg(e.target.value)}
             placeholder="Type a message..."
-            className="bg-white border border-gray-200 rounded-md px-3 py-2 text-sm w-full"
+            className="bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 rounded-lg px-3 py-2 text-sm w-full focus:ring-blue-600/50 focus:border-blue-600"
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
@@ -211,7 +261,7 @@ const Chatbox = React.memo(({ user, currentRoom }) => {
           <Button
             disabled={!socketRef.current}
             onClick={handleSendMsg}
-            className="px-4 py-2"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg shadow-lg shadow-blue-600/30 transition-all"
           >
             Send
           </Button>
@@ -221,4 +271,5 @@ const Chatbox = React.memo(({ user, currentRoom }) => {
   );
 });
 
+Chatbox.displayName = "Chatbox";
 export default Chatbox;

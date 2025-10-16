@@ -83,15 +83,46 @@ const CreateRoomConfig = ({
     }
   }, [search, problems]);
 
-  // if (!toggleCreateRoomConfig) return null;
-
   return (
     <div className="relative">
+      {/* Custom Scrollbar and Cursor Styles */}
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(15, 23, 42, 0.3);
+          border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(59, 130, 246, 0.3);
+          border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(59, 130, 246, 0.5);
+        }
+        
+        /* Custom Cursor */
+        * {
+          cursor: default;
+        }
+        button, [role="button"], .cursor-pointer {
+          cursor: pointer;
+        }
+        input, textarea, select {
+          cursor: text;
+        }
+        a {
+          cursor: pointer;
+        }
+      `}</style>
+
+      {/* Close Button */}
       {toggleCreateRoomConfig && (
         <button
           aria-expanded={toggleCreateRoomConfig}
           onClick={() => setToggleCreateRoomConfig(false)}
-          className="fixed right-6 top-6 z-50 flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 shadow-lg backdrop-blur hover:scale-105 transition-transform"
+          className="fixed right-6 top-6 z-50 flex items-center gap-2 rounded-full bg-slate-900/90 border border-slate-700 px-4 py-2 shadow-lg backdrop-blur hover:scale-105 transition-transform text-slate-300 hover:text-white"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -112,42 +143,54 @@ const CreateRoomConfig = ({
           </span>
         </button>
       )}
+
+      {/* Modal */}
       <div
-        className={`fixed right-6 top-20 z-40 w-[min(720px,95vw)] rounded-2xl bg-white/95 shadow-2xl ring-1 ring-black/5 transition-transform duration-200 ${
+        className={`fixed right-6 top-20 z-40 w-[min(720px,95vw)] rounded-2xl bg-slate-900/95 backdrop-blur-sm shadow-2xl border border-slate-800 transition-transform duration-200 ${
           toggleCreateRoomConfig
             ? "translate-y-0 opacity-100"
             : "translate-y-6 opacity-0 pointer-events-none"
         }`}
       >
-        <div className="flex items-center justify-between border-b px-5 py-3">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-slate-800 px-5 py-4">
           <div className="flex items-center gap-3">
-            <h3 className="text-lg font-semibold">Create Collaborative Room</h3>
-            <span className="text-sm text-muted-foreground">
+            <h3 className="text-lg font-semibold text-white">
+              Create Collaborative Room
+            </h3>
+            <span className="text-sm text-slate-400">
               Select up to your questions
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="text-sm">Selected:</div>
+            <div className="text-sm text-slate-300">Selected:</div>
             <div className="inline-flex items-center gap-2">
-              <div className="rounded-full bg-blue-600 px-3 py-1 text-white text-sm font-medium">
+              <div className="rounded-full bg-blue-600 px-3 py-1 text-white text-sm font-medium shadow-lg shadow-blue-600/30">
                 {questionArr.length}
               </div>
             </div>
           </div>
         </div>
 
+        {/* Content */}
         <div className="p-5 space-y-4">
+          {/* Search Bar */}
           <div className="flex gap-3">
             <Input
               value={search}
               onChange={handleSearch}
               placeholder="Search problems by title or uid"
+              className="bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 rounded-lg focus:ring-blue-600/50 focus:border-blue-600"
             />
-            <Button onClick={() => setSearch("")} className="px-4">
+            <Button
+              onClick={() => setSearch("")}
+              className="px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg"
+            >
               Clear
             </Button>
           </div>
 
+          {/* Selected Questions Tags */}
           <div className="flex flex-wrap gap-2">
             {questionArr.length === 0 ? (
               <div className="text-sm text-slate-500">
@@ -157,12 +200,12 @@ const CreateRoomConfig = ({
               questionArr.map((uid) => (
                 <div
                   key={uid}
-                  className="flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-sm"
+                  className="flex items-center gap-2 rounded-full bg-blue-600/20 border border-blue-600/50 px-3 py-1.5 text-sm text-blue-400"
                 >
                   <span className="font-mono">{uid}</span>
                   <button
                     onClick={() => handleRemoveSelected(uid)}
-                    className="rounded-full p-1 hover:bg-slate-200"
+                    className="rounded-full p-1 hover:bg-blue-600/30 transition-colors text-blue-400 hover:text-blue-300"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -182,7 +225,8 @@ const CreateRoomConfig = ({
             )}
           </div>
 
-          <div className="max-h-[40vh] overflow-y-auto border rounded-lg">
+          {/* Questions Table */}
+          <div className="max-h-[40vh] overflow-y-auto border border-slate-800 rounded-lg custom-scrollbar bg-slate-950">
             <Table>
               <TableBody>
                 {questions.slice(0, 50).map((question) => {
@@ -191,21 +235,25 @@ const CreateRoomConfig = ({
                     <TableRow
                       key={question.uid}
                       onClick={() => toggleQuestion(question.uid)}
-                      className={`cursor-pointer transition-colors ${isSelected ? "bg-blue-50" : "hover:bg-slate-50"}`}
+                      className={`cursor-pointer transition-colors border-b border-slate-800 ${
+                        isSelected
+                          ? "bg-blue-600/20 hover:bg-blue-600/30"
+                          : "hover:bg-slate-800/50"
+                      }`}
                     >
-                      <TableCell className="font-mono text-sm w-24">
+                      <TableCell className="font-mono text-sm w-24 text-slate-300">
                         {question.uid}
                       </TableCell>
-                      <TableCell className="truncate max-w-[60ch] text-sm">
+                      <TableCell className="truncate max-w-[60ch] text-sm text-slate-300">
                         {question.title}
                       </TableCell>
                       <TableCell
                         className={`font-semibold whitespace-nowrap text-sm ${
                           question.difficulty === "easy"
-                            ? "text-green-600"
+                            ? "text-green-400"
                             : question.difficulty === "medium"
-                              ? "text-orange-500"
-                              : "text-red-600"
+                              ? "text-yellow-400"
+                              : "text-red-400"
                         }`}
                       >
                         {question.difficulty}
@@ -215,7 +263,7 @@ const CreateRoomConfig = ({
                           <div className="inline-flex items-center gap-1">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5 text-blue-600"
+                              className="h-5 w-5 text-blue-400"
                               viewBox="0 0 20 20"
                               fill="currentColor"
                             >
@@ -235,15 +283,16 @@ const CreateRoomConfig = ({
             </Table>
           </div>
 
+          {/* Footer */}
           <div className="flex items-center justify-between">
-            <div className="text-sm text-muted-foreground">
+            <div className="text-sm text-slate-400">
               Tip: click a row to select/deselect a question.
             </div>
             <div className="flex items-center gap-2">
               <Button
                 disabled={!user || currentRoomPending || currentRoom}
                 onClick={() => handleCreateRoom(questionArr)}
-                className="bg-blue-600"
+                className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg shadow-lg shadow-blue-600/30 transition-all"
               >
                 Create Room
               </Button>

@@ -6,7 +6,6 @@ import { isQuestionSubmitted } from "@/api/services/questionService";
 const Description = React.memo(({ question }) => {
   const [showTopics, setShowTopics] = useState(false);
   const [showHints, setShowHints] = useState(false);
-  // const [isSolved, setIsSolved] = useState(false);
 
   const { data: isSolved } = useQuery({
     queryKey: ["isSubmitted", question.uid],
@@ -15,7 +14,7 @@ const Description = React.memo(({ question }) => {
 
   if (!question) {
     return (
-      <div className="flex items-center justify-center h-64 text-muted-foreground">
+      <div className="flex items-center justify-center h-64 text-slate-400">
         No problem found
       </div>
     );
@@ -24,27 +23,21 @@ const Description = React.memo(({ question }) => {
   const getDifficultyColor = (difficulty) => {
     switch (difficulty) {
       case "easy":
-        return "text-easy";
+        return "text-green-400";
       case "medium":
-        return "text-medium";
+        return "text-yellow-400";
       case "hard":
-        return "text-hard";
+        return "text-red-400";
       default:
-        return "text-muted-foreground";
+        return "text-slate-400";
     }
   };
-
-  // useEffect(() => {
-  //   const isSubmitted = isQuestionSubmitted(id);
-  //   console.log("is Submitted", isSubmitted);
-  //   setIsSolved(isSubmitted);
-  // }, [id]);
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
       <div className="space-y-4">
         <div className="flex items-start justify-between">
-          <h1 className="text-2xl font-semibold text-balance leading-tight">
+          <h1 className="text-2xl font-semibold text-balance leading-tight text-white">
             {question.uid}. {question.title}
           </h1>
           <div className="flex items-center gap-3 ml-4">
@@ -56,49 +49,45 @@ const Description = React.memo(({ question }) => {
             <div className="flex items-center gap-1">
               {console.log("submitted -> ", isSolved)}
               {isSolved?.isSubmitted > 0 ? (
-                <CheckCircle className="w-4 h-4 text-easy" />
+                <CheckCircle className="w-4 h-4 text-green-400" />
               ) : (
-                <XCircle className="w-4 h-4 text-muted-foreground" />
+                <XCircle className="w-4 h-4 text-slate-500" />
               )}
-              <span className="text-sm text-muted-foreground">
+              <span className="text-sm text-slate-400">
                 {isSolved?.isSubmitted > 0 ? "Solved" : "Unsolved"}
               </span>
             </div>
           </div>
         </div>
-        <div className="h-px bg-border" />
+        <div className="h-px bg-slate-800" />
       </div>
 
       <div className="space-y-3">
-        <p className="text-foreground leading-relaxed whitespace-pre-line">
+        <p className="text-slate-300 leading-relaxed whitespace-pre-line">
           {question.description}
         </p>
       </div>
 
       <div className="space-y-4">
-        <h2 className="text-lg font-medium">Examples</h2>
+        <h2 className="text-lg font-medium text-white">Examples</h2>
         <div className="space-y-4">
           {question?.examples.map((example, index) => (
             <div
               key={index}
-              className="bg-muted/50 rounded-lg p-4 space-y-2 font-mono text-sm"
+              className="bg-slate-800/50 border border-slate-700 rounded-xl p-4 space-y-2 font-mono text-sm"
             >
               <div>
-                <span className="font-semibold text-foreground">Input:</span>{" "}
-                <span className="text-muted-foreground">{example.input}</span>
+                <span className="font-semibold text-white">Input:</span>{" "}
+                <span className="text-slate-400">{example.input}</span>
               </div>
               <div>
-                <span className="font-semibold text-foreground">Output:</span>{" "}
-                <span className="text-muted-foreground">{example.output}</span>
+                <span className="font-semibold text-white">Output:</span>{" "}
+                <span className="text-slate-400">{example.output}</span>
               </div>
               {example.explanation && (
                 <div>
-                  <span className="font-semibold text-foreground">
-                    Explanation:
-                  </span>{" "}
-                  <span className="text-muted-foreground">
-                    {example.explanation}
-                  </span>
+                  <span className="font-semibold text-white">Explanation:</span>{" "}
+                  <span className="text-slate-400">{example.explanation}</span>
                 </div>
               )}
             </div>
@@ -107,10 +96,10 @@ const Description = React.memo(({ question }) => {
       </div>
 
       <div className="space-y-3">
-        <h2 className="text-lg font-medium">Constraints</h2>
+        <h2 className="text-lg font-medium text-white">Constraints</h2>
         <ul className="space-y-1 font-mono text-sm">
           {question.constraints.map((constraint, index) => (
-            <li key={index} className="text-muted-foreground">
+            <li key={index} className="text-slate-400">
               • {constraint}
             </li>
           ))}
@@ -120,7 +109,7 @@ const Description = React.memo(({ question }) => {
       <div className="space-y-3">
         <button
           onClick={() => setShowTopics(!showTopics)}
-          className="flex items-center gap-2 text-lg font-medium hover:text-primary transition-colors"
+          className="flex items-center gap-2 text-lg font-medium text-slate-300 hover:text-blue-400 transition-colors"
         >
           {showTopics ? (
             <ChevronDown className="w-4 h-4" />
@@ -134,7 +123,7 @@ const Description = React.memo(({ question }) => {
             {question.topics.map((topic, index) => (
               <span
                 key={index}
-                className="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-sm font-medium"
+                className="px-3 py-1 bg-blue-600/20 text-blue-400 border border-blue-600/50 rounded-full text-sm font-medium hover:bg-blue-600/30 transition-colors"
               >
                 {topic}
               </span>
@@ -146,7 +135,7 @@ const Description = React.memo(({ question }) => {
       <div className="space-y-3">
         <button
           onClick={() => setShowHints(!showHints)}
-          className="flex items-center gap-2 text-lg font-medium hover:text-primary transition-colors"
+          className="flex items-center gap-2 text-lg font-medium text-slate-300 hover:text-blue-400 transition-colors"
         >
           {showHints ? (
             <ChevronDown className="w-4 h-4" />
@@ -158,7 +147,7 @@ const Description = React.memo(({ question }) => {
         {showHints && (
           <ul className="space-y-2">
             {question.hints.map((hint, index) => (
-              <li key={index} className="text-muted-foreground leading-relaxed">
+              <li key={index} className="text-slate-400 leading-relaxed">
                 {index + 1}. {hint}
               </li>
             ))}

@@ -1,5 +1,5 @@
 import { Book, Menu, Sunset, Trees, Zap, Code } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import React, { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { userLogout } from "@/api/services/authService";
@@ -59,6 +59,7 @@ const Header = ({
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.userData);
+  const navigate = useNavigate();
 
   // user logged in check
   const { data: userData, isPending } = useQuery({
@@ -88,11 +89,9 @@ const Header = ({
   });
 
   return (
-    <section className="border-b border-slate-800/50 backdrop-blur-xl bg-slate-950">
+    <section className="border-b z-20 border-slate-800/50 backdrop-blur-xl bg-slate-950">
       <div className="container mx-auto px-6 py-3">
-        {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center justify-between">
-          {/* Logo */}
           <a href={logo.url} className="flex items-center space-x-2">
             <div className="relative">
               <div className="absolute inset-0 bg-blue-600 blur-md opacity-40"></div>
@@ -105,7 +104,6 @@ const Header = ({
             </span>
           </a>
 
-          {/* Menu Items */}
           <div className="flex items-center">
             <NavigationMenu>
               <NavigationMenuList>
@@ -114,7 +112,6 @@ const Header = ({
             </NavigationMenu>
           </div>
 
-          {/* Auth Buttons */}
           <div className="flex items-center gap-3">
             {isPending ? (
               <Loader className="animate-spin text-blue-400 w-5 h-5" />
@@ -127,8 +124,14 @@ const Header = ({
                 >
                   {auth.logout.title}
                 </Button>
-                <Avatar className="w-9 h-9 border-2 border-blue-600/50">
-                  <AvatarImage src={userData.avatarUrl} />
+                <Avatar
+                  onClick={() => navigate({ to: `/user/${userData.username}` })}
+                  className="w-9 h-9 border-2 border-blue-600/50 cursor-pointer"
+                >
+                  <AvatarImage
+                    className="cursor-pointer"
+                    src={userData.avatarUrl}
+                  />
                   <AvatarFallback className="bg-gradient-to-br from-blue-600 to-purple-600 text-white font-bold text-sm">
                     {userData.username?.charAt(0).toUpperCase() || "CN"}
                   </AvatarFallback>
@@ -155,7 +158,6 @@ const Header = ({
           </div>
         </nav>
 
-        {/* Mobile Navigation */}
         <div className="block lg:hidden">
           <div className="flex items-center justify-between">
             <a href={logo.url} className="flex items-center space-x-2">
@@ -166,7 +168,7 @@ const Header = ({
                 </div>
               </div>
               <span className="text-lg font-bold tracking-tight text-white">
-                Code<span className="text-blue-600">Collab</span>
+                Code<span className="text-blue-600">Clash</span>
               </span>
             </a>
             <Sheet>
@@ -179,12 +181,13 @@ const Header = ({
                   <Menu className="w-4 h-4" />
                 </Button>
               </SheetTrigger>
+
               <SheetContent className="overflow-y-auto bg-slate-900 border-slate-800 text-white">
                 <SheetHeader>
                   <SheetTitle className="text-white">
                     <a href={logo.url} className="flex items-center gap-2">
                       <span className="text-lg font-bold">
-                        Code<span className="text-blue-600">Collab</span>
+                        Code<span className="text-blue-600">Clash</span>
                       </span>
                     </a>
                   </SheetTitle>
@@ -202,13 +205,29 @@ const Header = ({
                     {isPending ? (
                       <Loader className="animate-spin text-blue-400 w-5 h-5" />
                     ) : userData ? (
-                      <Button
-                        onClick={() => handleLogout.mutate()}
-                        className="w-full bg-slate-800 hover:bg-slate-700 text-white h-9 text-sm"
-                        size="sm"
-                      >
-                        {auth.logout.title}
-                      </Button>
+                      <div className="flex flex-col gap-3">
+                        <Avatar
+                          onClick={() =>
+                            navigate({ to: `/user/${userData.username}` })
+                          }
+                          className="w-9 h-9 border-2 border-blue-600/50 cursor-pointer"
+                        >
+                          <AvatarImage
+                            className="cursor-pointer"
+                            src={userData.avatarUrl}
+                          />
+                          <AvatarFallback className="bg-gradient-to-br from-blue-600 to-purple-600 text-white font-bold text-sm">
+                            {userData.username?.charAt(0).toUpperCase() || "CN"}
+                          </AvatarFallback>
+                        </Avatar>
+                        <Button
+                          onClick={() => handleLogout.mutate()}
+                          className="w-full bg-slate-800 hover:bg-slate-700 text-white h-9 text-sm"
+                          size="sm"
+                        >
+                          {auth.logout.title}
+                        </Button>
+                      </div>
                     ) : (
                       <>
                         <Button

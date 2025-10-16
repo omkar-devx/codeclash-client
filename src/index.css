@@ -123,3 +123,44 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* globals.css (paste this into your global stylesheet, after @tailwind directives if using Tailwind) */
+
+:root {
+  --sb-thumb: rgba(59, 130, 246, 0.3);
+  --sb-track: rgba(15, 23, 42, 0.3);
+  --sb-thumb-hover: rgba(59, 130, 246, 0.5);
+}
+
+/* dark overrides if you use .dark */
+.dark {
+  --sb-thumb: rgba(59, 130, 246, 0.45);
+  --sb-track: rgba(10, 10, 10, 0.35);
+  --sb-thumb-hover: rgba(59, 130, 246, 0.65);
+}
+
+/* Firefox - applies color/width to all scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--sb-thumb) var(--sb-track);
+  /* background-color: black; */
+}
+
+/* WebKit - applies to all scrollbars (Chrome, Edge, Safari) */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: var(--sb-track);
+  border-radius: 9999px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--sb-thumb-hover);
+}

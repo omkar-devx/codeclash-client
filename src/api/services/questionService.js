@@ -71,3 +71,21 @@ export const isQuestionSubmitted = async (questionId) => {
     return {};
   }
 };
+
+export const getSubmissionById = async (sid) => {
+  try {
+    const res = await api.get(
+      `${API_ENDPOINTS.QUESTIONS.GETSUBMISSIONBYID(sid)}`
+    );
+    if (!res) {
+      toast.error("Something went wrong !!!");
+      throw new Error("something went wrong !!");
+    }
+    return res?.data?.data;
+  } catch (error) {
+    toast.error(
+      error.response?.data?.message || "Something went wrong on server"
+    );
+    return {};
+  }
+};

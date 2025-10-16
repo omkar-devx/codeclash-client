@@ -117,14 +117,14 @@ const Execution = React.memo(
     const disabled = runPending || submitPending || busy;
 
     return (
-      <div className="bg-gray-50 border-t border-gray-200 py-1 px-2 flex justify-between items-center ">
+      <div className="bg-slate-900/50 backdrop-blur-sm border-t border-slate-800 py-2 px-3 flex justify-between items-center">
         {user ? (
           <>
             <div className="flex gap-3">
               <Button
                 onClick={handleRun}
                 disabled={disabled}
-                className="px-5 py-2 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-md flex items-center gap-2"
+                className="px-5 py-2 cursor-pointer bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg shadow-lg shadow-blue-600/30 flex items-center gap-2 transition-all"
               >
                 {runPending ? (
                   <>
@@ -138,7 +138,7 @@ const Execution = React.memo(
               <Button
                 disabled={disabled}
                 onClick={handleSubmit}
-                className="px-5 py-2 cursor-pointer bg-green-600 hover:bg-green-700 text-white font-medium rounded-md shadow-md"
+                className="px-5 py-2 cursor-pointer bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg shadow-lg shadow-green-600/30 transition-all"
               >
                 {submitPending ? (
                   <>
@@ -151,7 +151,7 @@ const Execution = React.memo(
             </div>
 
             <div
-              className="cursor-pointer flex items-center gap-1 text-gray-600 hover:text-gray-900"
+              className="cursor-pointer flex items-center gap-1 text-slate-400 hover:text-blue-400 transition-colors"
               onClick={() => setToggleOutput(true)}
             >
               <ChevronUp className="w-5 h-5" />
@@ -159,7 +159,7 @@ const Execution = React.memo(
             </div>
           </>
         ) : (
-          <div className="text-gray-600 text-sm italic">
+          <div className="text-slate-400 text-sm italic">
             Please login to run or submit code
           </div>
         )}
@@ -168,4 +168,5 @@ const Execution = React.memo(
   }
 );
 
+Execution.displayName = "Execution";
 export default Execution;

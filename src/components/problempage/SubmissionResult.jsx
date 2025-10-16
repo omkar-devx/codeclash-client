@@ -34,95 +34,99 @@ export default function SubmissionResult({
   );
 
   return (
-    <div className="max-w-2xl mx-auto p-4 max-h-80 overflow-auto space-y-4 bg-white shadow rounded-md relative">
+    <div className="max-w-2xl mx-auto p-4 max-h-80 overflow-auto space-y-4 bg-slate-900/80 shadow-xl rounded-lg relative border border-slate-700">
       <div
-        className="absolute top-2 right-2 cursor-pointer p-1 rounded-full bg-red-100 hover:bg-red-200 border border-red-400"
+        className="absolute top-2 right-2 cursor-pointer p-1 rounded-full bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 transition-colors"
         onClick={() => setToggleSubmission(false)}
       >
-        <X className="w-4 h-4 text-red-700" />
+        <X className="w-4 h-4 text-red-400" />
       </div>
 
       <div className="flex justify-between items-start">
         <div>
-          <h2 className="text-lg font-semibold">Submission Result</h2>
-          <p className="text-sm text-gray-500">
+          <h2 className="text-lg font-semibold text-white">
+            Submission Result
+          </h2>
+          <p className="text-sm text-slate-400">
             Question UID: {submit?.questionUId}
           </p>
         </div>
         <div className="text-right px-7">
           <span
-            className={`px-2 py-1 text-xs font-medium rounded ${
+            className={`px-2 py-1 text-xs font-medium rounded-lg ${
               submit?.message?.toLowerCase().includes("accept")
-                ? "bg-green-100 text-green-800"
+                ? "bg-green-500/20 text-green-400"
                 : submit?.compile_output
-                  ? "bg-yellow-100 text-yellow-800"
-                  : "bg-red-100 text-red-800"
+                  ? "bg-yellow-500/20 text-yellow-400"
+                  : "bg-red-500/20 text-red-400"
             }`}
           >
             {submit?.message}
           </span>
-          <div className="text-xs text-gray-500 mt-1">
+          <div className="text-xs text-slate-400 mt-1">
             Time: {submit?.time}s
           </div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-slate-400">
             Memory: {submit?.memory} KB
           </div>
         </div>
       </div>
 
       <div className="space-y-1">
-        <div className="flex justify-between text-sm font-medium">
+        <div className="flex justify-between text-sm font-medium text-slate-300">
           <span>Testcases Passed</span>
           <span>
             {passed}/{total} ({percent}%)
           </span>
         </div>
-        <div className="w-full h-4 bg-gray-200 rounded overflow-hidden">
+        <div className="w-full h-4 bg-slate-800 rounded-full overflow-hidden">
           <div
-            className="h-4 rounded"
+            className="h-4 rounded-full"
             style={{
               width: `${percent}%`,
-              backgroundColor: percent === 100 ? "#16a34a" : "#4f46e5",
+              backgroundColor: percent === 100 ? "#10b981" : "#3b82f6",
             }}
           />
         </div>
       </div>
 
       <div>
-        <div className="text-sm font-medium mb-1">Testcase Results</div>
+        <div className="text-sm font-medium mb-2 text-slate-300">
+          Testcase Results
+        </div>
         <div className="flex flex-wrap gap-2">
           {statuses.map((s, i) => (
             <div
               key={i}
-              className={`w-8 h-8 flex items-center justify-center text-xs font-semibold rounded ${
+              className={`w-8 h-8 flex items-center justify-center text-xs font-semibold rounded-lg ${
                 s === "pass"
-                  ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-red-800"
+                  ? "bg-green-500/20 text-green-400"
+                  : "bg-red-500/20 text-red-400"
               }`}
             >
               {i + 1}
             </div>
           ))}
         </div>
-        <div className="text-xs text-gray-500 mt-1">
+        <div className="text-xs text-slate-500 mt-1">
           Green = passed, Red = failed
         </div>
       </div>
 
       <div className="space-y-2">
         <div>
-          <div className="text-sm font-medium">Stdout</div>
-          <pre className="bg-gray-50 p-2 rounded text-sm text-gray-800 whitespace-pre-wrap">
+          <div className="text-sm font-medium text-slate-300">Stdout</div>
+          <pre className="bg-slate-800/50 border border-slate-700 p-2 rounded-lg text-sm text-slate-300 whitespace-pre-wrap">
             {submit?.stdout || "—"}
           </pre>
         </div>
 
         {submit?.compile_output && (
           <div>
-            <div className="text-sm font-medium text-gray-700">
+            <div className="text-sm font-medium text-slate-300">
               Compilation Error
             </div>
-            <pre className="bg-gray-50 p-2 rounded text-sm text-red-700 whitespace-pre-wrap">
+            <pre className="bg-slate-800/50 border border-slate-700 p-2 rounded-lg text-sm text-red-400 whitespace-pre-wrap">
               {submit?.compile_output}
             </pre>
           </div>
@@ -130,10 +134,10 @@ export default function SubmissionResult({
 
         {submit?.stderr && (
           <div>
-            <div className="text-sm font-medium text-gray-700">
+            <div className="text-sm font-medium text-slate-300">
               Runtime Error / Stderr
             </div>
-            <pre className="bg-gray-50 p-2 rounded text-sm text-red-700 whitespace-pre-wrap">
+            <pre className="bg-slate-800/50 border border-slate-700 p-2 rounded-lg text-sm text-red-400 whitespace-pre-wrap">
               {submit?.stderr}
             </pre>
           </div>

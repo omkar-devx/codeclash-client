@@ -17,23 +17,58 @@ function App() {
         <ReactQueryDevtools initialIsOpen={false} /> */}
         <Toaster
           toastOptions={{
-            className: "text-sm font-medium rounded-md shadow-md",
+            className: "text-sm font-medium rounded-lg shadow-lg",
             style: {
-              border: "1px solid #e5e7eb",
-              background: "#ffffff",
-              color: "#111827",
-              padding: "12px 16px",
+              border: "1px solid #334155",
+              background: "#1e293b",
+              color: "#f1f5f9",
+              padding: "14px 18px",
+              backdropFilter: "blur(10px)",
+              backgroundColor: "rgba(30, 41, 59, 0.95)",
             },
             success: {
+              className: "text-sm font-medium rounded-lg shadow-lg",
+              style: {
+                border: "1px solid #10b98180",
+                background: "#1e293b",
+                color: "#86efac",
+                padding: "14px 18px",
+                backdropFilter: "blur(10px)",
+                backgroundColor: "rgba(30, 41, 59, 0.95)",
+              },
               iconTheme: {
                 primary: "#10b981",
-                secondary: "#D1FAE5",
+                secondary: "#1e293b",
               },
             },
             error: {
+              className: "text-sm font-medium rounded-lg shadow-lg",
+              style: {
+                border: "1px solid #ef444480",
+                background: "#1e293b",
+                color: "#fca5a5",
+                padding: "14px 18px",
+                backdropFilter: "blur(10px)",
+                backgroundColor: "rgba(30, 41, 59, 0.95)",
+              },
               iconTheme: {
                 primary: "#ef4444",
-                secondary: "#fee2e2",
+                secondary: "#1e293b",
+              },
+            },
+            loading: {
+              className: "text-sm font-medium rounded-lg shadow-lg",
+              style: {
+                border: "1px solid #6366f180",
+                background: "#1e293b",
+                color: "#a5b4fc",
+                padding: "14px 18px",
+                backdropFilter: "blur(10px)",
+                backgroundColor: "rgba(30, 41, 59, 0.95)",
+              },
+              iconTheme: {
+                primary: "#6366f1",
+                secondary: "#1e293b",
               },
             },
           }}

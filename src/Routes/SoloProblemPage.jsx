@@ -114,30 +114,29 @@ const SoloProblemPage = () => {
 
   if (isPending) {
     return (
-      <div className="w-full h-full flex items-center justify-center p-6">
-        <LoaderCircle className="animate-spin w-12 h-12 text-blue-600" />
+      <div className="w-full h-full flex items-center justify-center p-6 bg-slate-950">
+        <LoaderCircle className="animate-spin w-12 h-12 text-blue-400" />
       </div>
     );
   }
 
   if (isError) {
     toast.error(error?.message || "Something went wrong!");
-    return <p className="p-4 text-red-600">Error loading problem.</p>;
+    return (
+      <p className="p-4 text-red-400 bg-slate-950">Error loading problem.</p>
+    );
   }
 
   return (
-    <div className="grid grid-cols-[1fr_1fr] gap-4 px-3 py-2 h-full min-h-0">
-      {/* LEFT: Problem description */}
-      <div className="h-full overflow-auto min-h-0 bg-white rounded-lg shadow-sm border border-slate-100 p-6">
-        <div className="prose max-w-none text-slate-700">
+    <div className="grid lg:grid-cols-[1fr_1fr] gap-4 px-3 py-2 h-max lg:h-full lg:min-h-0 bg-slate-950">
+      <div className="h-full overflow-auto min-h-100 max-h-150 lg:min-h-0 bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-800 p-6 shadow-xl">
+        <div className="prose prose-invert max-w-none text-slate-300">
           <Description question={data} />
         </div>
       </div>
 
-      {/* RIGHT: Editor + tools + execution + outputs */}
-      <div className="h-full flex flex-col min-h-0 bg-white rounded-lg shadow-sm border border-slate-100 relative overflow-hidden">
-        {/* Editor tools (kept in place) */}
-        <div className="sticky top-0 z-10 bg-white border-b px-1 py-2">
+      <div className="h-full flex flex-col max-h-150 min-h-150 lg:min-h-0 bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-800 relative overflow-hidden shadow-xl">
+        <div className="sticky top-0 z-10 bg-slate-900/80 backdrop-blur-sm border-b border-slate-800 px-1 py-2">
           <EditorTools
             defaultCode={defaultCode}
             code={code}
@@ -147,10 +146,8 @@ const SoloProblemPage = () => {
           />
         </div>
 
-        {/* Code editor area */}
         <div className="flex-1 overflow-auto min-h-0 p-2">
-          {/* Make this container relative so overlays inside it match the editor width */}
-          <div className="h-full rounded-md overflow-hidden border border-slate-100 relative">
+          <div className="h-full rounded-lg overflow-hidden border border-slate-800 relative bg-slate-950">
             <CodeEditor
               id={data.uid}
               langId={langId}
@@ -159,7 +156,6 @@ const SoloProblemPage = () => {
               pageType={pageType}
             />
 
-            {/* Output & SubmissionResult moved INSIDE the editor container so their width exactly matches the editor */}
             <div
               className={`absolute left-0 right-0 bottom-0 z-20 max-h-60 flex justify-center transition-all ${
                 toggleOutput || toggleSubmission
@@ -167,10 +163,9 @@ const SoloProblemPage = () => {
                   : "opacity-0 pointer-events-none"
               }`}
             >
-              {/* overlay area matches editor width and is half the editor height */}
               <div className="w-full h-1/2 flex gap-1">
                 <div
-                  className={`${toggleOutput ? "block" : "hidden"} w-full h-full bg-white rounded-md border border-slate-200 shadow p-4 overflow-auto`}
+                  className={`${toggleOutput ? "block" : "hidden"} w-full h-full bg-slate-900/95 backdrop-blur-sm rounded-lg border border-slate-700 shadow-xl p-4 overflow-auto`}
                 >
                   <Output
                     toggleOutput={toggleOutput}
@@ -180,7 +175,7 @@ const SoloProblemPage = () => {
                 </div>
 
                 <div
-                  className={`${toggleSubmission ? "block" : "hidden"} w-full h-full bg-white rounded-md border border-slate-200 shadow p-4 overflow-auto`}
+                  className={`${toggleSubmission ? "block" : "hidden"} w-full h-full bg-slate-900/95 backdrop-blur-sm rounded-lg border border-slate-700 shadow-xl p-4 overflow-auto`}
                 >
                   <SubmissionResult
                     toggleSubmission={toggleSubmission}
@@ -194,8 +189,7 @@ const SoloProblemPage = () => {
           </div>
         </div>
 
-        {/* Execution controls */}
-        <div className="flex-shrink-0 border-t bg-slate-50 px-2 py-1">
+        <div className="flex-shrink-0 border-t border-slate-800 bg-slate-900/50 backdrop-blur-sm px-2 py-1">
           <Execution
             id={data.uid}
             langId={langId}

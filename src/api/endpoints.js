@@ -5,6 +5,7 @@ export const API_ENDPOINTS = {
     LOGOUT: "/auth/logout",
     REFRESH_ACCESSTOKEN: "/auth/refresh-accesstoken",
     CURRENTUSER: "/auth/me",
+    GETUSERPROFILE: (username) => `/auth/user/${username}`,
   },
   USER: {},
   QUESTIONS: {
@@ -16,6 +17,7 @@ export const API_ENDPOINTS = {
     QUESTIONLIKE: (questionId) => `/questions/${questionId}/like`,
     QUESTIONCOMMENT: (questionId) => `/questions/${questionId}/comment`,
     QUESTIONBOOKMARK: (questionId) => `/questions/${questionId}/bookmark`,
+    GETSUBMISSIONBYID: (sid) => `/questions/submission/${sid}`,
   },
   CODE: {
     CODERUN: "/coderunner/run",

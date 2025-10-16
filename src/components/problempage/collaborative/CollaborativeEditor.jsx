@@ -78,7 +78,7 @@ const CollaborativeEditor = React.memo(
       provider.awareness.setLocalStateField("user", {
         id: userId,
         name: userId,
-        color: "#2196f3",
+        color: "#2563eb",
       });
 
       const scheduleSave = () => {
@@ -111,31 +111,84 @@ const CollaborativeEditor = React.memo(
       !providerRef.current ||
       !ydocRef.current
     ) {
-      return <div>Loading editor...</div>;
+      return (
+        <div className="w-full h-full flex items-center justify-center bg-slate-950 text-slate-400">
+          <div className="flex flex-col items-center gap-2">
+            <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            <span className="text-sm">Loading editor...</span>
+          </div>
+        </div>
+      );
     }
 
     return (
-      <div className="h-full flex flex-col min-h-0 relative">
+      <div className="h-full flex flex-col min-h-0 relative bg-slate-950">
+        <style>{`
+          .codemirror-container::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+          }
+          .codemirror-container::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.3);
+            border-radius: 4px;
+          }
+          .codemirror-container::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.3);
+            border-radius: 4px;
+          }
+          .codemirror-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(59, 130, 246, 0.5);
+          }
+          
+          /* CodeMirror custom scrollbar */
+          .cm-gutters {
+            background: #0f172a !important;
+            border-right: 1px solid #334155 !important;
+          }
+          .cm-content {
+            background: #0f172a !important;
+          }
+          .cm-line {
+            color: #cbd5e1 !important;
+          }
+          
+          /* Custom Cursor */
+          * {
+            cursor: default;
+          }
+          button, [role="button"], .cursor-pointer {
+            cursor: pointer;
+          }
+          input, textarea, select {
+            cursor: text;
+          }
+          a {
+            cursor: pointer;
+          }
+        `}</style>
+
         <div className="flex-1 min-h-0 flex flex-col">
-          <div className="flex-1 min-h-0 overflow-">
-            <div className="h-full min-h-0">
-              <ReactCodeMirror
-                height="100%"
-                className="h-full"
-                theme={tomorrowNightBlue}
-                extensions={[
-                  getLanguageExtension(getLanguageNameById(langId)),
-                  yCollab(yTextRef.current, providerRef.current?.awareness, {
-                    clientID: ydocRef.current?.clientID,
-                  }),
-                  EditorView.editable.of(true),
-                ]}
-              />
+          <div className="flex-1 min-h-0 flex flex-col">
+            <div className="flex-1 min-h-0 overflow-hidden">
+              <div className="h-full min-h-0 codemirror-container bg-slate-950 border border-slate-800 rounded-t-2xl">
+                <ReactCodeMirror
+                  height="100%"
+                  className="h-full"
+                  theme={tomorrowNightBlue}
+                  extensions={[
+                    getLanguageExtension(getLanguageNameById(langId)),
+                    yCollab(yTextRef.current, providerRef.current?.awareness, {
+                      clientID: ydocRef.current?.clientID,
+                    }),
+                    EditorView.editable.of(true),
+                  ]}
+                />
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="sticky bottom-0 z-20 bg-white border-t">
+        <div className="sticky bottom-0 z-20 bg-slate-900/50 backdrop-blur-sm border-t border-slate-800 rounded-b-2xl">
           <div className="p-2">
             <Execution
               id={id}
@@ -169,4 +222,5 @@ const CollaborativeEditor = React.memo(
   }
 );
 
+CollaborativeEditor.displayName = "CollaborativeEditor";
 export default CollaborativeEditor;
