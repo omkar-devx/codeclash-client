@@ -73,6 +73,7 @@ const Header = ({
     // console.log(userData);
     if (userData) {
       dispatch(setUserData(userData));
+      console.log("user data -> ", userData);
     }
   }, [userData]);
 

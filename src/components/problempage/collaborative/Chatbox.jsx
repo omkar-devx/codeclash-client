@@ -148,9 +148,9 @@ const Chatbox = React.memo(({ user, currentRoom }) => {
       <div className="bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-800 shadow-xl overflow-hidden flex flex-col flex-1">
         <div className="px-4 py-3 border-b border-slate-800 bg-slate-900/80">
           <div className="text-sm font-semibold text-white">Room Chat</div>
-          <div className="text-xs text-slate-400">
+          {/* <div className="text-xs text-slate-400">
             Keep messages short and clear
-          </div>
+          </div> */}
         </div>
 
         <div className="flex-1 overflow-hidden">

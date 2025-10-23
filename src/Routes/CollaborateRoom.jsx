@@ -230,15 +230,15 @@ const CollaborateRoom = () => {
         </div>
 
         <div className="bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-800 shadow-xl overflow-hidden flex flex-col min-h-150 max-h-150 lg:min-h-0">
-          <div className="px-3 py-2 border-b border-slate-800 flex justify-between gap-2 items-center overflow-auto bg-slate-900/80 custom-scrollbar">
-            <div className="flex gap-2 items-center overflow-auto custom-scrollbar">
+          <div className="px-3 py-2 border-b border-slate-800 flex justify-between gap-2 items-center bg-slate-900/80">
+            <div className="flex gap-2 items-center overflow-x-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900/50 pr-2 max-w-[70%]">
               {roomUsers.map((u) => {
                 const name =
                   typeof u === "string" ? u : (u?.username ?? "unknown");
                 return (
                   <div
                     key={typeof u === "string" ? u : (u?.id ?? name)}
-                    className={`cursor-pointer px-3 py-1.5 rounded-lg text-xs font-medium select-none transition-all ${
+                    className={`relative group cursor-pointer px-3 py-1.5 rounded-lg text-xs font-medium select-none transition-all flex-shrink-0 max-w-[100px] ${
                       currentUser === name
                         ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30"
                         : "bg-slate-800 text-slate-300 hover:bg-slate-700"
@@ -252,13 +252,20 @@ const CollaborateRoom = () => {
                     }}
                     aria-label={`Select user ${name}`}
                   >
-                    {name}
+                    <span className="truncate block">{name}</span>
+
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-900 border border-slate-700 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
+                      <span className="text-slate-200 text-xs">{name}</span>
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px">
+                        <div className="border-4 border-transparent border-t-slate-900"></div>
+                      </div>
+                    </div>
                   </div>
                 );
               })}
             </div>
 
-            <div className="flex items-center gap-2 bg-slate-800/50 border border-slate-700 px-3 py-1.5 rounded-lg shadow-sm w-fit">
+            <div className="flex items-center gap-2 bg-slate-800/50 border border-slate-700 px-3 py-1.5 rounded-lg shadow-sm flex-shrink-0">
               <span className="text-sm font-medium text-slate-400">
                 Language:
               </span>
@@ -329,7 +336,7 @@ const CollaborateRoom = () => {
           </div>
 
           <div className="px-3 py-2 border-b border-slate-800 bg-slate-900/50">
-            <ActiveUsers />
+            <ActiveUsers usersOnline={usersOnline} />
           </div>
 
           <div className="flex-1 overflow-auto p-3 min-h-0 custom-scrollbar">
