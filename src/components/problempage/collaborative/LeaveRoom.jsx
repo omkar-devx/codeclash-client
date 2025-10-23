@@ -60,7 +60,7 @@ const LeaveRoom = ({
       // perform deletion in a transaction
       ydoc.transact(() => {
         questions.forEach((uid) => {
-          console.log(`Deleting room:${roomId}: user:${userId} q:${uid}`);
+          // console.log(`Deleting room:${roomId}: user:${userId} q:${uid}`);
           localStorage.removeItem(`room:${roomId}:uid:${uid}`);
           const yText = ydoc.getText(`code-${userId}-${uid}`);
           if (yText && yText.length > 0) {

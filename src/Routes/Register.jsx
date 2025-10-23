@@ -1,15 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import React, { useEffect, useState } from "react";
-// import { Button, Input, Label } from "@/components";
 import { useNavigate } from "@tanstack/react-router";
-import checkAuth from "@/utils/checkAuth";
 import toast from "react-hot-toast";
 import { userRegister } from "@/api/services/authService";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2Icon } from "lucide-react";
+import { Loader2Icon, Code, Upload } from "lucide-react";
 
 const Register = ({
   heading = "Signup",
@@ -110,13 +108,40 @@ const Register = ({
   }, [user, navigate]);
 
   if (user) {
-    return <Loader className="animate-spin text-blue-500 w-6 h-6" />;
+    return <Loader2Icon className="animate-spin text-blue-400 w-6 h-6" />;
   }
 
   return (
-    <section className="bg-muted h-max">
-      <div className="flex  h-max py-4 items-center justify-center">
-        {/* Logo */}
+    <section className="bg-slate-950 min-h-max ">
+      <style>{`
+        * {
+          cursor: default;
+        }
+        button, [role="button"], .cursor-pointer {
+          cursor: pointer;
+        }
+        input, textarea, select {
+          cursor: text;
+        }
+        a {
+          cursor: pointer;
+        }
+      `}</style>
+
+      <div className="fixed inset-0 overflow-hidden pointer-events-none w-screen ">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+                           linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px)`,
+            backgroundSize: "50px 50px",
+          }}
+        ></div>
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+      </div>
+
+      <div className="flex min-h-screen flex-col w-full py-6 items-center justify-center relative z-10">
         <form
           action=""
           onSubmit={(e) => {
@@ -143,10 +168,26 @@ const Register = ({
           }}
         >
           <div className="flex flex-col items-center gap-6 lg:justify-start">
-            <div className="min-w-sm border-muted bg-background flex w-full max-w-sm flex-col items-center gap-y-4 rounded-md border px-6 py-8 shadow-md">
-              {heading && <h1 className="text-xl font-semibold">{heading}</h1>}
-              <div className="text-center">
-                <div className="flex items-center justify-center">
+            <div className="min-w-sm bg-slate-900/50 backdrop-blur-sm flex w-full max-w-sm flex-col items-center gap-y-6 rounded-2xl border border-slate-800 px-8 py-10 shadow-2xl">
+              <div className="flex flex-col items-center gap-4 w-full">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-blue-600 blur-lg opacity-50"></div>
+                  <div className="relative w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-2xl">
+                    <Code className="w-7 h-7 text-white" />
+                  </div>
+                </div>
+                {heading && (
+                  <h1 className="text-2xl font-bold text-white text-center">
+                    {heading}
+                  </h1>
+                )}
+                <p className="text-sm text-slate-400">
+                  Join CodeCollab community
+                </p>
+              </div>
+
+              <div className="text-center w-full">
+                <div className="flex items-center justify-center mb-3">
                   <input
                     type="file"
                     id="avatar"
@@ -155,21 +196,28 @@ const Register = ({
                     className="hidden"
                   />
                   {avatar ? (
-                    <Avatar className="w-[4rem] h-[4rem]">
+                    <Avatar className="w-20 h-20 border-2 border-blue-600/50">
                       <AvatarImage src={preview} />
-                      <AvatarFallback>CN</AvatarFallback>
+                      <AvatarFallback className="bg-gradient-to-br from-blue-600 to-purple-600 text-white font-bold">
+                        {fullName.charAt(0) || "U"}
+                      </AvatarFallback>
                     </Avatar>
                   ) : (
                     <label
                       htmlFor="avatar"
-                      className="cursor-pointer rounded-full w-[4rem] h-[4rem] bg-muted flex items-center justify-center text-sm font-medium text-muted-foreground hover:bg-muted/60 transition"
+                      className="cursor-pointer rounded-2xl w-20 h-20 bg-slate-800/50 border-2 border-dashed border-slate-700 hover:border-blue-600 flex items-center justify-center transition-all group"
                     >
-                      Upload Avatar
+                      <div className="flex flex-col items-center gap-1">
+                        <Upload className="w-5 h-5 text-slate-400 group-hover:text-blue-400 transition-colors" />
+                        <span className="text-xs text-slate-500 group-hover:text-slate-400 transition-colors">
+                          Upload
+                        </span>
+                      </div>
                     </label>
                   )}
                 </div>
                 {avatar && (
-                  <p className="text-sm mt-2 text-muted-foreground text-center truncate max-w-[8rem]">
+                  <p className="text-xs text-slate-400 text-center truncate max-w-[8rem] mx-auto">
                     {avatar.name}
                   </p>
                 )}
@@ -180,13 +228,16 @@ const Register = ({
                 type="text"
                 id="fullname"
                 placeholder="Full Name"
+                className="w-full text-sm bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 rounded-lg focus:ring-blue-600/50 focus:border-blue-600"
                 required
               />
+
               <Input
                 onChange={(e) => setUsername(e.target.value)}
                 type="text"
                 id="username"
                 placeholder="Username"
+                className="w-full text-sm bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 rounded-lg focus:ring-blue-600/50 focus:border-blue-600"
                 required
               />
 
@@ -194,31 +245,34 @@ const Register = ({
                 onChange={(e) => setEmail(e.target.value)}
                 type="email"
                 placeholder="Email"
-                className="text-sm"
+                className="w-full text-sm bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 rounded-lg focus:ring-blue-600/50 focus:border-blue-600"
                 required
               />
+
               <Input
                 onChange={(e) => setPassword(e.target.value)}
                 type="password"
                 placeholder="Password"
-                className="text-sm"
+                className="w-full text-sm bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 rounded-lg focus:ring-blue-600/50 focus:border-blue-600"
                 required
               />
+
               <Input
                 onChange={(e) => setConfirmP(e.target.value)}
                 type="password"
                 placeholder="Confirm Password"
-                className="text-sm"
+                className="w-full text-sm bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 rounded-lg focus:ring-blue-600/50 focus:border-blue-600"
                 required
               />
+
               <Button
                 disabled={handleRegister.isPending}
                 type="submit"
-                className="w-full"
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg shadow-lg shadow-blue-600/30 transition-all py-2.5"
               >
                 {handleRegister.isPending ? (
                   <>
-                    <Loader2Icon className="animate-spin" />
+                    <Loader2Icon className="animate-spin w-4 h-4 mr-2" />
                     Please wait
                   </>
                 ) : (
@@ -226,11 +280,12 @@ const Register = ({
                 )}
               </Button>
             </div>
-            <div className="text-muted-foreground flex justify-center gap-1 text-sm">
+
+            <div className="text-slate-400 flex justify-center gap-2 text-sm">
               <p>{signupText}</p>
               <a
                 href={signupUrl}
-                className="text-primary font-medium hover:underline"
+                className="text-blue-400 font-medium hover:text-blue-300 transition-colors"
               >
                 Login
               </a>

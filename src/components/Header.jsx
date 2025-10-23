@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { removeUserData, setUserData } from "@/features/auth/authSlice";
 import { Loader } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+// import { Link } from "@tanstack/react-router";
 import {
   Accordion,
   AccordionContent,
@@ -69,7 +70,7 @@ const Header = ({
   });
 
   useEffect(() => {
-    console.log(userData);
+    // console.log(userData);
     if (userData) {
       dispatch(setUserData(userData));
     }
@@ -124,18 +125,17 @@ const Header = ({
                 >
                   {auth.logout.title}
                 </Button>
-                <Avatar
-                  onClick={() => navigate({ to: `/user/${userData.username}` })}
-                  className="w-9 h-9 border-2 border-blue-600/50 cursor-pointer"
-                >
-                  <AvatarImage
-                    className="cursor-pointer"
-                    src={userData.avatarUrl}
-                  />
-                  <AvatarFallback className="bg-gradient-to-br from-blue-600 to-purple-600 text-white font-bold text-sm">
-                    {userData.username?.charAt(0).toUpperCase() || "CN"}
-                  </AvatarFallback>
-                </Avatar>
+                <Link to={`/user/${userData.username}`} target="_blank">
+                  <Avatar className="w-9 h-9 border-2 border-blue-600/50 cursor-pointer">
+                    <AvatarImage
+                      className="cursor-pointer"
+                      src={userData.avatarUrl}
+                    />
+                    <AvatarFallback className="bg-gradient-to-br from-blue-600 to-purple-600 text-white font-bold text-sm">
+                      {userData.username?.charAt(0).toUpperCase() || "CN"}
+                    </AvatarFallback>
+                  </Avatar>
+                </Link>
               </div>
             ) : (
               <>
@@ -206,20 +206,18 @@ const Header = ({
                       <Loader className="animate-spin text-blue-400 w-5 h-5" />
                     ) : userData ? (
                       <div className="flex flex-col gap-3">
-                        <Avatar
-                          onClick={() =>
-                            navigate({ to: `/user/${userData.username}` })
-                          }
-                          className="w-9 h-9 border-2 border-blue-600/50 cursor-pointer"
-                        >
-                          <AvatarImage
-                            className="cursor-pointer"
-                            src={userData.avatarUrl}
-                          />
-                          <AvatarFallback className="bg-gradient-to-br from-blue-600 to-purple-600 text-white font-bold text-sm">
-                            {userData.username?.charAt(0).toUpperCase() || "CN"}
-                          </AvatarFallback>
-                        </Avatar>
+                        <Link to={`/user/${userData.username}`} target="_blank">
+                          <Avatar className="w-9 h-9 border-2 border-blue-600/50 cursor-pointer">
+                            <AvatarImage
+                              className="cursor-pointer"
+                              src={userData.avatarUrl}
+                            />
+                            <AvatarFallback className="bg-gradient-to-br from-blue-600 to-purple-600 text-white font-bold text-sm">
+                              {userData.username?.charAt(0).toUpperCase() ||
+                                "CN"}
+                            </AvatarFallback>
+                          </Avatar>
+                        </Link>
                         <Button
                           onClick={() => handleLogout.mutate()}
                           className="w-full bg-slate-800 hover:bg-slate-700 text-white h-9 text-sm"

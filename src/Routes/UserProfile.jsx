@@ -51,7 +51,7 @@ export default function UserProfile() {
   });
 
   useEffect(() => {
-    console.log("userprofile data ", userProfileData);
+    // console.log("userprofile data ", userProfileData);
   }, [userProfileData]);
 
   const getDifficultyColor = (difficulty = "") => {
@@ -144,7 +144,7 @@ export default function UserProfile() {
                 </div>
                 <span className="px-3 py-1.5 bg-blue-600/20 border border-blue-500/30 rounded-full text-sm text-blue-400 flex items-center space-x-1">
                   <Trophy className="w-3.5 h-3.5" />
-                  <span className="font-medium">Knight</span>
+                  <span className="font-medium">Novice</span>
                 </span>
               </div>
 

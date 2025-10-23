@@ -33,7 +33,7 @@ const Login = ({
   const handleLogin = useMutation({
     mutationFn: ({ username, password }) => userLogin({ username, password }),
     onSuccess: (res) => {
-      console.log("login res", res);
+      // console.log("login res", res);
       toast.success("user loggedin");
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       navigate({ to: "/" });

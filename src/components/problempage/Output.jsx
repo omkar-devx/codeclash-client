@@ -124,7 +124,7 @@ const Output = React.memo(({ toggleOutput, setToggleOutput, outputs }) => {
   if (!toggleOutput) return null;
 
   return (
-    <div className="bg-slate-900/80 border border-slate-700 rounded-lg w-full max-h-[70vh] overflow-y-auto shadow-xl relative p-4 z-20">
+    <div className="bg-slate-900/80 border border-slate-700 rounded-lg w-full max-h-[50vh] overflow-y-auto shadow-xl relative p-4 z-20">
       <div
         className="absolute right-2 top-2 cursor-pointer bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 rounded-full p-1 transition-colors"
         onClick={() => setToggleOutput(false)}

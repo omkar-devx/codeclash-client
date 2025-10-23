@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { ChevronDown, ChevronRight, CheckCircle, XCircle } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  CheckCircle,
+  XCircle,
+  ExternalLink,
+} from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { isQuestionSubmitted } from "@/api/services/questionService";
+import { Link } from "@tanstack/react-router";
 
 const Description = React.memo(({ question }) => {
   const [showTopics, setShowTopics] = useState(false);
@@ -41,13 +48,25 @@ const Description = React.memo(({ question }) => {
             {question.uid}. {question.title}
           </h1>
           <div className="flex items-center gap-3 ml-4">
+            <div className="flex items-center gap-1.5 text-blue-600 hover:text-blue-700 transition-colors">
+              <Link
+                to={`/solution/${question.uid}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium hover:underline"
+              >
+                Solution
+              </Link>
+              <ExternalLink className="w-4 h-4" />
+            </div>
+
             <span
               className={`font-medium capitalize ${getDifficultyColor(question.difficulty)}`}
             >
               {question.difficulty}
             </span>
             <div className="flex items-center gap-1">
-              {console.log("submitted -> ", isSolved)}
+              {/* {console.log("submitted -> ", isSolved)} */}
               {isSolved?.isSubmitted > 0 ? (
                 <CheckCircle className="w-4 h-4 text-green-400" />
               ) : (

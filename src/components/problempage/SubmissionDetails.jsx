@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getSubmissionById } from "@/api/services/questionService";
 import {
@@ -31,7 +31,7 @@ const SubmissionModal = ({
 
   useEffect(() => {
     if (submissionData) {
-      console.log("Submission Data -> ", submissionData);
+      // console.log("Submission Data -> ", submissionData);
     }
   }, [submissionData]);
 
@@ -42,13 +42,11 @@ const SubmissionModal = ({
 
   return (
     <>
-      {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity"
         onClick={onClose}
       ></div>
 
-      {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
         <style>{`
           .modal-scrollbar::-webkit-scrollbar {
@@ -81,7 +79,6 @@ const SubmissionModal = ({
         `}</style>
 
         <div className="w-full max-w-3xl bg-slate-900/95 backdrop-blur-xl border border-slate-800 rounded-2xl shadow-2xl my-8">
-          {/* Header */}
           <div className="sticky top-0 z-10 bg-slate-900/80 backdrop-blur-sm border-b border-slate-800 px-6 py-4 flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold text-white">
@@ -100,7 +97,6 @@ const SubmissionModal = ({
             </button>
           </div>
 
-          {/* Content */}
           <div className="modal-scrollbar overflow-y-auto max-h-[calc(100vh-200px)]">
             {isPending ? (
               <div className="flex justify-center items-center py-16">
@@ -130,7 +126,6 @@ const SubmissionModal = ({
               </div>
             ) : (
               <div className="p-6 space-y-6">
-                {/* Status Badge */}
                 <div className="flex items-center justify-between">
                   <span className="text-slate-400">Status</span>
                   <Badge
@@ -149,9 +144,7 @@ const SubmissionModal = ({
                   </Badge>
                 </div>
 
-                {/* Meta Information Grid */}
                 <div className="grid grid-cols-2 gap-4">
-                  {/* Question UID */}
                   <div className="bg-slate-800/30 border border-slate-800 rounded-lg p-3">
                     <p className="text-slate-500 text-xs mb-1">Question UID</p>
                     <p className="text-lg font-bold text-white">
@@ -159,7 +152,6 @@ const SubmissionModal = ({
                     </p>
                   </div>
 
-                  {/* User ID */}
                   <div className="bg-slate-800/30 border border-slate-800 rounded-lg p-3">
                     <p className="text-slate-500 text-xs mb-1">User ID</p>
                     <p className="text-sm font-semibold text-slate-300 truncate">
@@ -167,7 +159,6 @@ const SubmissionModal = ({
                     </p>
                   </div>
 
-                  {/* Execution Time */}
                   <div className="bg-slate-800/30 border border-slate-800 rounded-lg p-3">
                     <div className="flex items-center gap-1.5 mb-1">
                       <Timer className="w-3.5 h-3.5 text-blue-400" />
@@ -178,7 +169,6 @@ const SubmissionModal = ({
                     </p>
                   </div>
 
-                  {/* Memory Usage */}
                   <div className="bg-slate-800/30 border border-slate-800 rounded-lg p-3">
                     <div className="flex items-center gap-1.5 mb-1">
                       <MemoryStick className="w-3.5 h-3.5 text-purple-400" />
@@ -189,7 +179,6 @@ const SubmissionModal = ({
                     </p>
                   </div>
 
-                  {/* Test Cases */}
                   <div className="bg-slate-800/30 border border-slate-800 rounded-lg p-3">
                     <p className="text-slate-500 text-xs mb-1">Test Cases</p>
                     <p className="text-lg font-bold">
@@ -202,7 +191,6 @@ const SubmissionModal = ({
                     </p>
                   </div>
 
-                  {/* Submitted Date */}
                   <div className="bg-slate-800/30 border border-slate-800 rounded-lg p-3">
                     <p className="text-slate-500 text-xs mb-1">Submitted</p>
                     <p className="text-xs font-semibold text-slate-300">
@@ -211,7 +199,6 @@ const SubmissionModal = ({
                   </div>
                 </div>
 
-                {/* Source Code */}
                 <div>
                   <div className="flex items-center gap-2 mb-3">
                     <Code className="w-4 h-4 text-blue-400" />
@@ -224,7 +211,6 @@ const SubmissionModal = ({
                   </div>
                 </div>
 
-                {/* Test Case Information */}
                 <div className="space-y-3">
                   <h3 className="font-bold text-white">
                     Test Case Information
@@ -262,7 +248,6 @@ const SubmissionModal = ({
                   )}
                 </div>
 
-                {/* Result Message */}
                 <div className="space-y-3">
                   <h3 className="font-bold text-white">Result</h3>
 
@@ -291,7 +276,6 @@ const SubmissionModal = ({
             )}
           </div>
 
-          {/* Footer */}
           <div className="sticky bottom-0 bg-slate-900/80 backdrop-blur-sm border-t border-slate-800 px-6 py-4 flex justify-end">
             <button
               onClick={onClose}

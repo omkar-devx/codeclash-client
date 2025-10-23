@@ -31,7 +31,7 @@ const CodeEditor = React.memo(
       (lid, val) => {
         try {
           const key = makeKey(lid);
-          console.log(key);
+          // console.log(key);
           localStorage.setItem(key, JSON.stringify(val));
         } catch (e) {
           console.warn("storeToLocalStorage failed", e);

@@ -39,12 +39,12 @@ export const userJoinRoom = async ({ roomId }) => {
 export const getCurrentRoom = async () => {
   try {
     const currentRoom = await api.post(API_ENDPOINTS.ROOM.CURRENTROOM);
-    console.log("room", currentRoom.data.data);
+    // console.log("room", currentRoom.data.data);
 
     return currentRoom.data.data;
   } catch (error) {
-    console.log(error.response?.data?.message);
-    // toast.error("Something went Wrong on Current Room");
+    // console.log(error.response?.data?.message);
+    toast.error("Something went Wrong on Current Room");
     return null;
   }
 };
@@ -98,7 +98,7 @@ export const getChatHistory = async ({ roomId }) => {
 export const getRoomUsers = async ({ roomId }) => {
   try {
     const roomUsers = await api.post(API_ENDPOINTS.ROOM.ROOMUSERS, { roomId });
-    console.log("get room users", roomUsers.data.data);
+    // console.log("get room users", roomUsers.data.data);
     return roomUsers.data.data;
   } catch (error) {
     toast.error(error.response?.data?.message);
@@ -111,7 +111,7 @@ export const getUsersOnline = async ({ roomId }) => {
     const usersOnline = await api.post(API_ENDPOINTS.ROOM.USERSONLINE, {
       roomId,
     });
-    console.log("get users online", usersOnline.data.data);
+    // console.log("get users online", usersOnline.data.data);
     return usersOnline.data.data;
   } catch (error) {
     toast.error(error.response?.data?.message);

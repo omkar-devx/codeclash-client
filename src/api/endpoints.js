@@ -18,6 +18,7 @@ export const API_ENDPOINTS = {
     QUESTIONCOMMENT: (questionId) => `/questions/${questionId}/comment`,
     QUESTIONBOOKMARK: (questionId) => `/questions/${questionId}/bookmark`,
     GETSUBMISSIONBYID: (sid) => `/questions/submission/${sid}`,
+    GETSOLUTION: (id) => `/questions/getsolution/${id}`,
   },
   CODE: {
     CODERUN: "/coderunner/run",

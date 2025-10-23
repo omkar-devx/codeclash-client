@@ -10,7 +10,7 @@ export const problemset = async () => {
       toast.error("No Question Found");
       return [];
     }
-    console.log("res problem", res.data.data);
+    // console.log("res problem", res.data.data);
     return res.data.data;
   } catch (error) {
     toast.error(
@@ -22,7 +22,6 @@ export const problemset = async () => {
 
 export const questionById = async (questionId) => {
   try {
-    console.log(API_ENDPOINTS.QUESTIONS.FINDBYID(questionId));
     const res = await api.get(API_ENDPOINTS.QUESTIONS.FINDBYID(questionId));
     if (!res?.data?.data) {
       toast.error("Unable to fetch Question");
@@ -39,11 +38,10 @@ export const questionById = async (questionId) => {
 
 export const questionSearch = async (searchKey) => {
   try {
-    console.log("serach key", searchKey);
     const questions = await api.get(
       `${API_ENDPOINTS.QUESTIONS.QUESTIONSEARCH}?searchKey=${searchKey}`
     );
-    console.log("search questions", questions.data.data);
+    // console.log("search questions", questions.data.data);
     return questions.data.data;
   } catch (error) {
     console.warn(
@@ -85,6 +83,23 @@ export const getSubmissionById = async (sid) => {
   } catch (error) {
     toast.error(
       error.response?.data?.message || "Something went wrong on server"
+    );
+    return {};
+  }
+};
+
+export const getSolutionById = async (id) => {
+  try {
+    const res = await api.get(`${API_ENDPOINTS.QUESTIONS.GETSOLUTION(id)}`);
+    if (!res) {
+      toast.error("something went wrong !!!");
+      throw new Error("Something went wrong !!");
+    }
+
+    return res?.data?.data;
+  } catch (error) {
+    toast.error(
+      error.response?.data?.message || "Something wrong wrong on server"
     );
     return {};
   }

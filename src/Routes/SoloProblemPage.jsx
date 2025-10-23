@@ -1,4 +1,3 @@
-// FILE: SoloProblemPage.refactor.jsx
 import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -157,15 +156,15 @@ const SoloProblemPage = () => {
             />
 
             <div
-              className={`absolute left-0 right-0 bottom-0 z-20 max-h-60 flex justify-center transition-all ${
+              className={`absolute left-0 right-0 bottom-20 z-[200] max-h-60 flex justify-center transition-all ${
                 toggleOutput || toggleSubmission
                   ? "opacity-100"
                   : "opacity-0 pointer-events-none"
               }`}
             >
-              <div className="w-full h-1/2 flex gap-1">
+              <div className="w-full h-1/2  flex gap-1">
                 <div
-                  className={`${toggleOutput ? "block" : "hidden"} w-full h-full bg-slate-900/95 backdrop-blur-sm rounded-lg border border-slate-700 shadow-xl p-4 overflow-auto`}
+                  className={`${toggleOutput ? "block" : "hidden"}  w-full h-full bg-slate-900/95 backdrop-blur-sm rounded-lg border border-slate-700 shadow-xl p-2 overflow-auto`}
                 >
                   <Output
                     toggleOutput={toggleOutput}
@@ -175,7 +174,7 @@ const SoloProblemPage = () => {
                 </div>
 
                 <div
-                  className={`${toggleSubmission ? "block" : "hidden"} w-full h-full bg-slate-900/95 backdrop-blur-sm rounded-lg border border-slate-700 shadow-xl p-4 overflow-auto`}
+                  className={`${toggleSubmission ? "block" : "hidden"} w-full h-full bg-slate-900/95 backdrop-blur-sm rounded-lg border border-slate-700 shadow-xl p-2 overflow-auto`}
                 >
                   <SubmissionResult
                     toggleSubmission={toggleSubmission}
@@ -189,7 +188,7 @@ const SoloProblemPage = () => {
           </div>
         </div>
 
-        <div className="flex-shrink-0 border-t border-slate-800 bg-slate-900/50 backdrop-blur-sm px-2 py-1">
+        <div className="flex-shrink-0 border-t z-0 border-slate-800 bg-slate-900/50 backdrop-blur-sm px-2 py-1">
           <Execution
             id={data.uid}
             langId={langId}

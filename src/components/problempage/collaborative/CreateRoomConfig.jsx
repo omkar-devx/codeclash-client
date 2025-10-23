@@ -85,7 +85,6 @@ const CreateRoomConfig = ({
 
   return (
     <div className="relative">
-      {/* Custom Scrollbar and Cursor Styles */}
       <style>{`
         .custom-scrollbar::-webkit-scrollbar {
           width: 8px;
@@ -117,7 +116,6 @@ const CreateRoomConfig = ({
         }
       `}</style>
 
-      {/* Close Button */}
       {toggleCreateRoomConfig && (
         <button
           aria-expanded={toggleCreateRoomConfig}
@@ -144,7 +142,6 @@ const CreateRoomConfig = ({
         </button>
       )}
 
-      {/* Modal */}
       <div
         className={`fixed right-6 top-20 z-40 w-[min(720px,95vw)] rounded-2xl bg-slate-900/95 backdrop-blur-sm shadow-2xl border border-slate-800 transition-transform duration-200 ${
           toggleCreateRoomConfig
@@ -152,7 +149,6 @@ const CreateRoomConfig = ({
             : "translate-y-6 opacity-0 pointer-events-none"
         }`}
       >
-        {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-800 px-5 py-4">
           <div className="flex items-center gap-3">
             <h3 className="text-lg font-semibold text-white">
@@ -172,9 +168,7 @@ const CreateRoomConfig = ({
           </div>
         </div>
 
-        {/* Content */}
         <div className="p-5 space-y-4">
-          {/* Search Bar */}
           <div className="flex gap-3">
             <Input
               value={search}
@@ -190,7 +184,6 @@ const CreateRoomConfig = ({
             </Button>
           </div>
 
-          {/* Selected Questions Tags */}
           <div className="flex flex-wrap gap-2">
             {questionArr.length === 0 ? (
               <div className="text-sm text-slate-500">
@@ -225,7 +218,6 @@ const CreateRoomConfig = ({
             )}
           </div>
 
-          {/* Questions Table */}
           <div className="max-h-[40vh] overflow-y-auto border border-slate-800 rounded-lg custom-scrollbar bg-slate-950">
             <Table>
               <TableBody>
@@ -283,7 +275,6 @@ const CreateRoomConfig = ({
             </Table>
           </div>
 
-          {/* Footer */}
           <div className="flex items-center justify-between">
             <div className="text-sm text-slate-400">
               Tip: click a row to select/deselect a question.

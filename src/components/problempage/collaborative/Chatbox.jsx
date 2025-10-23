@@ -7,14 +7,6 @@ import { useMutation } from "@tanstack/react-query";
 import { getChatHistory } from "@/api/services/collaborateService";
 import { addChatHistory } from "@/features/room/chatSlice";
 
-/**
- * Compact & professional Chatbox UI with Dark Theme
- * - Avatars removed (only username displayed)
- * - Reduced padding and gaps for compact message height
- * - Preserves all behavior (socket, Redux, grouping, normalization)
- * - Dark theme with custom scrollbar
- */
-
 const Chatbox = React.memo(({ user, currentRoom }) => {
   const rawChats = useSelector((state) => state.chat.message);
   const dispatch = useDispatch();
@@ -44,7 +36,7 @@ const Chatbox = React.memo(({ user, currentRoom }) => {
           message: msg,
         },
       };
-      console.log("message", data);
+      // console.log("message", data);
       socketRef.current.send(JSON.stringify(data));
       setMsg("");
     }
@@ -122,7 +114,6 @@ const Chatbox = React.memo(({ user, currentRoom }) => {
 
   return (
     <div className="flex flex-col h-full gap-2">
-      {/* Custom Scrollbar and Cursor Styles */}
       <style>{`
         .chat-scrollbar::-webkit-scrollbar {
           width: 8px;
@@ -154,9 +145,7 @@ const Chatbox = React.memo(({ user, currentRoom }) => {
         }
       `}</style>
 
-      {/* Chat Container */}
       <div className="bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-slate-800 shadow-xl overflow-hidden flex flex-col flex-1">
-        {/* Header */}
         <div className="px-4 py-3 border-b border-slate-800 bg-slate-900/80">
           <div className="text-sm font-semibold text-white">Room Chat</div>
           <div className="text-xs text-slate-400">
@@ -164,7 +153,6 @@ const Chatbox = React.memo(({ user, currentRoom }) => {
           </div>
         </div>
 
-        {/* Messages Area */}
         <div className="flex-1 overflow-hidden">
           <div
             ref={listRef}
@@ -191,7 +179,6 @@ const Chatbox = React.memo(({ user, currentRoom }) => {
                       }`}
                     >
                       <div className="max-w-[82%]">
-                        {/* Username */}
                         <div
                           className={`text-[0.72rem] mb-1 ${
                             isMe
@@ -202,7 +189,6 @@ const Chatbox = React.memo(({ user, currentRoom }) => {
                           {group.userId}
                         </div>
 
-                        {/* Messages */}
                         <div className="flex flex-col gap-1">
                           {group.messages.map((m, mi) => (
                             <div
@@ -217,7 +203,6 @@ const Chatbox = React.memo(({ user, currentRoom }) => {
                             </div>
                           ))}
 
-                          {/* Timestamp */}
                           {time && (
                             <div
                               className={`text-[0.68rem] mt-1 ${
@@ -240,7 +225,6 @@ const Chatbox = React.memo(({ user, currentRoom }) => {
         </div>
       </div>
 
-      {/* Input Area */}
       <div className="flex items-center gap-2">
         <div className="flex-1">
           <Input

@@ -11,6 +11,7 @@ import {
   Play,
   Sparkles,
 } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 
 export default function Home() {
   const [animateHero, setAnimateHero] = useState(false);
@@ -21,7 +22,7 @@ export default function Home() {
     solutions: 0,
   });
   const [activeTestimonial, setActiveTestimonial] = useState(0);
-
+  const navigate = useNavigate();
   useEffect(() => {
     setAnimateHero(true);
 
@@ -33,10 +34,10 @@ export default function Home() {
     const timer = setInterval(() => {
       step++;
       setStats({
-        users: Math.floor((15000 / steps) * step),
-        problems: Math.floor((850 / steps) * step),
-        rooms: Math.floor((2500 / steps) * step),
-        solutions: Math.floor((50000 / steps) * step),
+        users: Math.floor((1000 / steps) * step),
+        problems: Math.floor((50 / steps) * step),
+        rooms: Math.floor((100 / steps) * step),
+        solutions: Math.floor((100 / steps) * step),
       });
 
       if (step >= steps) clearInterval(timer);
@@ -122,35 +123,34 @@ export default function Home() {
   const problemCategories = [
     {
       name: "Arrays & Strings",
-      count: 145,
+      count: 50,
       color: "from-blue-500 to-cyan-500",
     },
     {
       name: "Trees & Graphs",
-      count: 178,
+      count: 30,
       color: "from-purple-500 to-pink-500",
     },
     {
       name: "Dynamic Programming",
-      count: 132,
+      count: 26,
       color: "from-orange-500 to-red-500",
     },
     {
       name: "Sorting & Searching",
-      count: 98,
+      count: 38,
       color: "from-green-500 to-emerald-500",
     },
-    { name: "Linked Lists", count: 87, color: "from-indigo-500 to-blue-500" },
+    { name: "Linked Lists", count: 20, color: "from-indigo-500 to-blue-500" },
     {
       name: "Greedy & Backtracking",
-      count: 110,
+      count: 15,
       color: "from-pink-500 to-rose-500",
     },
   ];
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
-      {/* Animated Grid Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-100">
         <div
           className="absolute inset-0"
@@ -168,59 +168,6 @@ export default function Home() {
       </div>
 
       <div className="relative bg-slate-950 z-10">
-        {/* Navigation */}
-        {/* <nav className="border-b border-slate-800/50 backdrop-blur-xl bg-slate-950/80">
-          <div className="container mx-auto px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-blue-600 blur-lg opacity-50"></div>
-                  <div className="relative w-11 h-11 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-2xl">
-                    <Code className="w-6 h-6" />
-                  </div>
-                </div>
-                <span className="text-2xl font-bold tracking-tight">
-                  Code<span className="text-blue-600">Collab</span>
-                </span>
-              </div>
-              <div className="hidden md:flex items-center space-x-8">
-                <a
-                  href="#"
-                  className="text-slate-300 hover:text-white transition-colors font-medium"
-                >
-                  Problems
-                </a>
-                <a
-                  href="#"
-                  className="text-slate-300 hover:text-white transition-colors font-medium"
-                >
-                  Collaborate
-                </a>
-                <a
-                  href="#"
-                  className="text-slate-300 hover:text-white transition-colors font-medium"
-                >
-                  Leaderboard
-                </a>
-                <a
-                  href="#"
-                  className="text-slate-300 hover:text-white transition-colors font-medium"
-                >
-                  Learn
-                </a>
-              </div>
-              <div className="flex items-center space-x-4">
-                <button className="px-5 py-2.5 text-slate-300 hover:text-white transition-colors font-medium">
-                  Sign In
-                </button>
-                <button className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 rounded-xl transition-all font-medium shadow-lg shadow-blue-600/30">
-                  Start Free
-                </button>
-              </div>
-            </div>
-          </div>
-        </nav> */}
-
         <section className="pt-20 pb-24">
           <div className="container mx-auto px-6">
             <div
@@ -229,7 +176,7 @@ export default function Home() {
               <div className="inline-flex items-center space-x-2 px-3 py-1.5 bg-blue-600/10 border border-blue-500/20 rounded-full text-xs text-blue-400 backdrop-blur-sm mb-6">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span className="font-medium">
-                  Trusted by 15,000+ developers worldwide
+                  Trusted by 1000+ developers worldwide
                 </span>
               </div>
 
@@ -249,12 +196,18 @@ export default function Home() {
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <button className="group px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-xl transition-all shadow-xl shadow-blue-600/30 flex items-center space-x-2 text-base font-semibold">
+                <button
+                  onClick={() => navigate({ to: "/problemset" })}
+                  className="group px-6 py-3 cursor-pointer bg-blue-600 hover:bg-blue-700 rounded-xl transition-all shadow-xl shadow-blue-600/30 flex items-center space-x-2 text-base font-semibold"
+                >
                   <Play className="w-4 h-4" />
                   <span>Start Coding Now</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
-                <button className="px-6 py-3 border-2 border-slate-700 hover:border-blue-600 rounded-xl transition-all flex items-center space-x-2 text-base font-semibold backdrop-blur-sm hover:bg-slate-800/50">
+                <button
+                  onClick={() => navigate({ to: "/problemset" })}
+                  className="px-6 py-3 cursor-pointer border-2 border-slate-700 hover:border-blue-600 rounded-xl transition-all flex items-center space-x-2 text-base font-semibold backdrop-blur-sm hover:bg-slate-800/50"
+                >
                   <Users className="w-4 h-4" />
                   <span>Create a Room</span>
                 </button>
@@ -388,7 +341,10 @@ export default function Home() {
                       <span className="text-2xl font-bold text-slate-400 group-hover:text-white transition-colors">
                         {category.count}
                       </span>
-                      <span className="text-slate-500 text-sm group-hover:text-blue-400 transition-colors">
+                      <span
+                        onClick={() => navigate({ to: "/problemset" })}
+                        className="text-slate-500 text-sm group-hover:text-blue-400 transition-colors"
+                      >
                         Problems →
                       </span>
                     </div>
@@ -472,12 +428,15 @@ export default function Home() {
                   Join thousands of developers who are already mastering DSA and
                   landing their dream jobs
                 </p>
-                <button className="px-10 py-4 bg-white text-blue-600 rounded-xl hover:bg-blue-50 transition-all text-lg font-bold shadow-2xl hover:scale-105 hover:shadow-white/20">
+                <button
+                  onClick={() => navigate({ to: "/problemset" })}
+                  className="px-10 py-4 cursor-pointer bg-white text-blue-600 rounded-xl hover:bg-blue-50 transition-all text-lg font-bold shadow-2xl hover:scale-105 hover:shadow-white/20"
+                >
                   Get Started for Free
                 </button>
-                <p className="mt-5 text-blue-200 text-sm">
+                {/* <p className="mt-5 text-blue-200 text-sm">
                   No credit card required • Free forever
-                </p>
+                </p> */}
               </div>
             </div>
           </div>
@@ -492,7 +451,7 @@ export default function Home() {
                     <Code className="w-6 h-6" />
                   </div>
                   <span className="text-2xl font-bold">
-                    Code<span className="text-blue-600">Collab</span>
+                    Code<span className="text-blue-600">Clash</span>
                   </span>
                 </div>
                 <p className="text-slate-400 leading-relaxed max-w-md">
@@ -504,12 +463,18 @@ export default function Home() {
                 <h3 className="font-bold mb-4 text-lg">Product</h3>
                 <ul className="space-y-3 text-slate-400">
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <a
+                      href="/problemset"
+                      className="hover:text-white transition-colors"
+                    >
                       Problems
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <a
+                      href="/problemset"
+                      className="hover:text-white transition-colors"
+                    >
                       Collaborate
                     </a>
                   </li>
@@ -518,26 +483,29 @@ export default function Home() {
                       Leaderboard
                     </a>
                   </li>
-                  <li>
+                  {/* <li>
                     <a href="#" className="hover:text-white transition-colors">
                       Pricing
                     </a>
-                  </li>
+                  </li> */}
                 </ul>
               </div>
               <div>
                 <h3 className="font-bold mb-4 text-lg">Company</h3>
                 <ul className="space-y-3 text-slate-400">
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <a
+                      href="/aboutus"
+                      className="hover:text-white transition-colors"
+                    >
                       About
                     </a>
                   </li>
-                  <li>
+                  {/* <li>
                     <a href="#" className="hover:text-white transition-colors">
                       Blog
                     </a>
-                  </li>
+                  </li> */}
                   <li>
                     <a href="#" className="hover:text-white transition-colors">
                       Careers
