@@ -11,6 +11,7 @@ import { EditorView } from "@codemirror/view";
 import EditorTools from "../EditorTools";
 import { Execution, Output } from "@/components";
 import SubmissionResult from "../SubmissionResult";
+import { BACKEND_YJS_URL } from "@/api/constants";
 
 function getLanguageExtension(language) {
   switch ((language || "").toLowerCase()) {
@@ -68,7 +69,11 @@ const CollaborativeEditor = React.memo(
 
     useEffect(() => {
       const ydoc = new Y.Doc();
-      const provider = new WebsocketProvider("/yjs", `room-${roomId}`, ydoc);
+      const provider = new WebsocketProvider(
+        BACKEND_YJS_URL,
+        `room-${roomId}`,
+        ydoc
+      );
       const yText = ydoc.getText(`code-${userId}-${id}`);
 
       ydocRef.current = ydoc;

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
 import { getChatHistory } from "@/api/services/collaborateService";
 import { addChatHistory } from "@/features/room/chatSlice";
+import { BACKEND_WS_URL } from "@/api/constants";
 
 const Chatbox = React.memo(({ user, currentRoom }) => {
   const rawChats = useSelector((state) => state.chat.message);
@@ -52,7 +53,7 @@ const Chatbox = React.memo(({ user, currentRoom }) => {
   useEffect(() => {
     if (user && currentRoom) {
       chatHistoryMutation({ roomId: currentRoom.roomId });
-      const socket = initSocket("/ws", dispatch);
+      const socket = initSocket(BACKEND_WS_URL, dispatch);
 
       socketRef.current = socket;
 

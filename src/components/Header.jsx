@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { removeUserData, setUserData } from "@/features/auth/authSlice";
 import { Loader } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-// import { Link } from "@tanstack/react-router";
 import {
   Accordion,
   AccordionContent,

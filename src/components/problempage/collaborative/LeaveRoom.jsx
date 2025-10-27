@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { WebsocketProvider } from "y-websocket";
 import { Button } from "@/components";
 import { useNavigate } from "@tanstack/react-router";
+import { BACKEND_YJS_URL } from "@/api/constants";
 
 const LeaveRoom = ({
   currentRoom,
@@ -21,7 +22,11 @@ const LeaveRoom = ({
       const userId = user.username;
 
       const ydoc = new Y.Doc();
-      const provider = new WebsocketProvider("/yjs", `room-${roomId}`, ydoc);
+      const provider = new WebsocketProvider(
+        BACKEND_YJS_URL,
+        `room-${roomId}`,
+        ydoc
+      );
 
       // wait for provider status 'connected'
       await new Promise((resolve) => {

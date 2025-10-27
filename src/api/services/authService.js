@@ -29,8 +29,12 @@ export const refreshAccessToken = async () => {
 // user login
 export const userLogin = async (userCredentials) => {
   try {
-    const res = await api.post(API_ENDPOINTS.AUTH.LOGIN, userCredentials);
+    const res = await api.post(API_ENDPOINTS.AUTH.LOGIN, userCredentials, {
+      withCredentials: true,
+    });
     console.log(res.data);
+    // api.defaults.headers.common.Authorization = `Bearer${res.data.data.accessToken}`;
+    // api.defaults.headers.common.refreshToken = res.data.data.refreshToken;
     return res.data;
   } catch (error) {
     // console.log("login error", error.response?.data?.message);

@@ -44,7 +44,7 @@ export const getCurrentRoom = async () => {
     return currentRoom.data.data;
   } catch (error) {
     // console.log(error.response?.data?.message);
-    toast.error("Something went Wrong on Current Room");
+    // toast.error("Something went Wrong on Current Room");
     return null;
   }
 };

@@ -26,7 +26,6 @@ const ActiveUsers = ({ usersOnline }) => {
               <span className="text-slate-300 text-sm max-w-[50px] truncate">
                 {username}
               </span>
-              {/* Tooltip */}
               <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-900 border border-slate-700 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 pointer-events-none">
                 <span className="text-slate-200 text-xs">{username}</span>
                 <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px">
