@@ -1,42 +1,57 @@
-# -------- Build stage --------
-FROM node:18-alpine AS builder
+# ---------- Builder ----------
+FROM node:20-alpine AS builder
 
-# Set working dir
+# allow installing bash for scripts if desired (optional)
+RUN apk add --no-cache bash
+
 WORKDIR /app
 
-# Install dependencies (copy only package manifests first to use layer cache)
-COPY package.json package-lock.json ./
+# Install pnpm/yarn if you use them - this example uses npm (default)
+# Copy package files first to leverage build cache
+COPY package*.json ./
+# If using package-lock.json, it's already included above
+RUN npm ci --silent
 
-# Use npm ci for reproducible installs (fast and clean)
-RUN npm ci --production=false
-
-# Copy rest of source
+# Copy the rest of the source
 COPY . .
 
-# Build the app (Vite)
-ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
+# Accept VITE_* build args and create .env.production for Vite
+# Provide defaults where helpful (these can be overridden at build time)
+ARG VITE_DEFAULT_AVATAR=""
+ARG VITE_BASE_URL_RAW=""
+ARG VITE_BASE_URL=""
+ARG VITE_WS_BASE_URL=""
+ARG VITE_YJS_BASE_URL=""
+
+# Write an .env.production file that Vite will use at build time
+RUN printf '%s\n' \
+  "VITE_DEFAULT_AVATAR=${VITE_DEFAULT_AVATAR}" \
+  "VITE_BASE_URL_RAW=${VITE_BASE_URL_RAW}" \
+  "VITE_BASE_URL=${VITE_BASE_URL}" \
+  "VITE_WS_BASE_URL=${VITE_WS_BASE_URL}" \
+  "VITE_YJS_BASE_URL=${VITE_YJS_BASE_URL}" \
+  > .env.production
+
+# Build the app
 RUN npm run build
 
-# -------- Production stage --------
-FROM nginx:stable-alpine AS runner
+# ---------- Production image ----------
+FROM nginx:stable-alpine AS production
 
-# Remove default nginx static files
-RUN rm -rf /usr/share/nginx/html/*
+# Add small tweaks: create /var/cache/nginx and expose
+RUN mkdir -p /var/cache/nginx
 
-# Copy built assets from builder
+# Copy built files from builder
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy custom nginx config (optional: included below). If you don't use a custom config, nginx default works but
-# the SPA fallback (history API) won't be configured.
+# Copy a custom nginx config to support SPA routing (fallback to index.html)
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port (optional, containers usually use 80)
+# Optional: copy healthcheck script (or use Docker HEALTHCHECK)
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+  CMD wget -qO- --timeout=2 http://localhost/ || exit 1
+
 EXPOSE 80
 
-# Healthcheck (optional)
-HEALTHCHECK --interval=30s --timeout=5s \
-  CMD wget -qO- http://localhost/ || exit 1
-
-# Run nginx in foreground
+# run nginx in foreground
 CMD ["nginx", "-g", "daemon off;"]
