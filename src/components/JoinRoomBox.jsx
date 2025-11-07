@@ -74,7 +74,17 @@ const JoinRoomBox = React.memo(
 
     return (
       <div className="w-full flex flex-col gap-4">
-        <p className="text-sm font-medium text-slate-400">Room</p>
+        <p className="text-sm font-medium text-slate-400">
+          Room{" "}
+          {!user ? (
+            <span className="italic font-light">
+              {" "}
+              (login for create or join room)
+            </span>
+          ) : (
+            ""
+          )}
+        </p>
 
         <div className="flex gap-2">
           <Button

@@ -6,6 +6,7 @@ pnpm-lock.yaml
 .vscode
 .DS_Store
 
+
 # Build output (don't copy local dist unless you want it)
 dist
 build
@@ -16,10 +17,8 @@ build
 
 # Local env files (don't embed secrets)
 .env
-.env.local
-.env.development
-.env.test
-.env.*.local
+.env.*
+!.env.sample
 
 # OS files
 Thumbs.db

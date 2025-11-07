@@ -63,9 +63,9 @@ export const isQuestionSubmitted = async (questionId) => {
     }
     return res?.data?.data;
   } catch (error) {
-    toast.error(
-      error.response?.data?.message || "Something went wrong on server"
-    );
+    // toast.error(
+    //   error.response?.data?.message || "Something went wrong on server"
+    // );
     return {};
   }
 };
