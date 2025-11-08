@@ -94,29 +94,39 @@ export default function Home() {
   ];
 
   const companies = [
-    "Google",
-    "Microsoft",
-    "Amazon",
-    "Meta",
-    "Apple",
-    "Netflix",
+    "Capgimini",
+    "Deloitte",
+    "Accenture",
+    "Infosys",
+    "Oracle",
+    "Asian Paints",
   ];
 
   const testimonials = [
     {
-      name: "Sarah Chen",
-      role: "Software Engineer at Google",
-      text: "This platform helped me crack my dream job. The collaborative rooms feature made practicing with peers incredibly effective.",
+      name: "Rishabh Singh",
+      role: "Student at IIT Bombay",
+      text: "I love how fast and easy CodeClash is to use! I can write code, talk about logic, and see my friends’ changes right away. It’s perfect for group coding sessions",
     },
     {
-      name: "Raj Patel",
-      role: "Senior Developer at Microsoft",
-      text: "The best DSA platform I've used. Clean interface, challenging problems, and the real-time collaboration is a game-changer.",
+      name: "Abhishek Yadav",
+      role: "Student at TIMSCDR",
+      text: "CodeClash is one of the best collaborative platforms I’ve used. Creating rooms to solve DSA problems with friends makes group coding and practice super easy!",
     },
     {
-      name: "Emily Rodriguez",
-      role: "Tech Lead at Amazon",
-      text: "I've tried many coding platforms, but this one stands out. The problem quality and collaborative features are unmatched.",
+      name: "Deva Yadav",
+      role: "Student at TIMSCDR",
+      text: "CodeClash really helped me get better at coding with my friends. The live chat and collaboration make it easy to solve problems together. It feels just like coding side by side!",
+    },
+    {
+      name: "Pranav Redij",
+      role: "Student at IIT Bombay",
+      text: "CodeClash has changed the way I practice coding. My friends and I can code, debug, and share ideas in real time. It’s like having an online coding lab — super useful for interview prep!",
+    },
+    {
+      name: "Yaksh Bhesaniya",
+      role: "Student at IIT Bombay",
+      text: "CodeClash makes learning fun! My friends and I used it to prepare for our interviews — no setup needed, just join a room and start coding together. It’s such a cool tool for teamwork.",
     },
   ];
 
@@ -512,7 +522,11 @@ export default function Home() {
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <a
+                      href="https://www.omkardevx.com/"
+                      target="_blank"
+                      className="hover:text-white transition-colors"
+                    >
                       Contact
                     </a>
                   </li>
