@@ -109,6 +109,11 @@ export default function Home() {
       text: "I love how fast and easy CodeClash is to use! I can write code, talk about logic, and see my friends’ changes right away. It’s perfect for group coding sessions",
     },
     {
+      name: "Deepshikha Prajapati",
+      role: "Student at TIMSCDR",
+      text: "Best coding platform I have used so far! The live chat and coding room feature is really something to go for. It's fun to code here.",
+    },
+    {
       name: "Abhishek Yadav",
       role: "Student at TIMSCDR",
       text: "CodeClash is one of the best collaborative platforms I’ve used. Creating rooms to solve DSA problems with friends makes group coding and practice super easy!",
