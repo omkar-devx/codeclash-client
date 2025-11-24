@@ -42,12 +42,9 @@ CodeClash-Client is the single-page application that lets users:
 
 ## Quick Demo
 
-- Home → Problem List → Open a problem → Join/Create a room → Code together → Submit to run.
-- Authentication uses short-lived access tokens and refresh tokens. See the backend for token endpoints.
-
 ![CodeClash Demo](/docs/codeclash-demo.gif)
 
----s
+---
 
 ## Tech Stack
 
