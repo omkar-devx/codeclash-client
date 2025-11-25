@@ -42,7 +42,7 @@ CodeClash-Client is the single-page application that lets users:
 
 ## Quick Demo
 
-![CodeClash Demo](/docs/codeclash-demo.gif)
+![CodeClash Demo](https://github.com/user-attachments/assets/a3d7ceb9-08e4-4df8-8ef3-611935867b4f)
 
 ---
 
